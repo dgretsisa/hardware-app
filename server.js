@@ -1,16 +1,27 @@
 const express = require('express')
 const http = require('http')
 const socketio = require('socket.io')
-const cors = require('cors');
-const dotenv = require('dotenv').config();
+const cors = require('cors')
+const dotenv = require('dotenv').config()
 
 const app = express();
 
+/** Database Connection */
+const connectDB = require('./server/utility/database.connection');
+connectDB();
+
 /** App Middlewares */
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 /** Routes */
-app.get('/', (req, res) => res.send('Hello World'));
+app.use('/api/users', require('./server/route/user.route'));
+
+
+/** Error Handler */
+const errorHandler = require('./server/utility/error.handler');
+app.use(errorHandler);
 
 /** Create Server */
 const server = http.Server(app);
@@ -22,9 +33,10 @@ socket.on('connection', client => {
 
     /** Disconnect */
     client.on('disconnect', () => console.log(`[ ${client.id} ]: disconnected from the server.`));
-
-    client.emit('welcome', 'Welcome Message');
 });
+
+/** Globalize Socket */
+app.set('socket', socket);
 
 /** Listen Server */
 const port = process.env.PORT || 8000;

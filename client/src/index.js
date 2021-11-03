@@ -1,18 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './tailwind/tailwind.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+/** Redux */
+import { Provider } from 'react-redux';
+import store from './redux/store/store';
 
 /** Context */
 import { SocketContext, socket } from './context/websocket.context';
 
 ReactDOM.render(
-  <SocketContext.Provider value={socket}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </SocketContext.Provider>,
+  <Provider store={store}>
+    <SocketContext.Provider value={socket}>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </SocketContext.Provider>
+  </Provider>,
   document.getElementById('root')
 );
 
