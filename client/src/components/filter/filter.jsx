@@ -40,7 +40,7 @@ const Filter = ({ sortByAscending, sortByDescending }) => {
                 <Listbox.Option
                   key={optionIdx}
                   className={({ active }) =>
-                    `${active ? 'text-amber-900 bg-amber-100' : 'text-gray-900'}
+                    `${active ? 'text-yellow-900 bg-yellow-100' : 'text-gray-900'}
                           cursor-default select-none relative py-2 pl-10 pr-4`
                   }
                   value={option}
@@ -61,7 +61,7 @@ const Filter = ({ sortByAscending, sortByDescending }) => {
                       {selected ? (
                         <span
                           className={`${
-                            active ? 'text-amber-600' : 'text-amber-600'
+                            active ? 'text-yellow-600' : 'text-yellow-600'
                           }
                                 absolute inset-y-0 left-0 flex items-center pl-3`}
                         >

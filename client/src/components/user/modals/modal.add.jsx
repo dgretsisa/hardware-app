@@ -102,7 +102,7 @@ const ModalAdd = ({ modal, inputs, validationErrors, handleInputChange, handleCr
                             </div>
                             <div className="flex justify-end gap-5 mt-4">
                                 <button onClick={handleCancel} className="rounded text-gray-600 text-sm bg-gray-200 px-4 py-2 border hover:bg-gray-300">Cancel</button>
-                                <button onClick={handleCreate} className="rounded text-white text-sm bg-green-700 px-4 py-2 hover:bg-green-800">Create</button>
+                                <button onClick={handleCreate} className="rounded text-sm text-white bg-yellow-600 px-4 py-2 hover:bg-yellow-700">Create</button>
                             </div>
                     </div>
                     </Transition.Child>

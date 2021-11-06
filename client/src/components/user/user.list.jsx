@@ -68,8 +68,8 @@ const UserList = ({ users, updateButton, deleteButton, formatDate }) => {
                                 </td>
                                 <td className="px-5 border-b border-gray-200 bg-white text-sm">
                                     <span className="relative inline-block px-3 py-1  leading-tight">
-                                        <span aria-hidden="true" className={`${user.isActive ? 'bg-green-200': 'bg-red-200' } absolute inset-0 opacity-50 rounded-full`}></span>
-                                        <span className={`relative ${user.isActive ? 'text-green-900': 'text-red-900'} font-semibold`}>
+                                        <span aria-hidden="true" className={`${user.isActive ? 'bg-yellow-100': 'bg-red-200' } absolute inset-0 opacity-50 rounded-full`}></span>
+                                        <span className={`relative ${user.isActive ? 'text-yellow-600': 'text-red-900'}`}>
                                             {user.isActive ? 'active': 'inactive'}
                                         </span>
                                     </span>
