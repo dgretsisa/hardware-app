@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment';
 
@@ -14,6 +15,9 @@ import { cancel, clear } from '../../redux/action/general.action';
 
 /** Context */
 import { SocketContext } from '../../context/websocket.context';
+
+/** Utility Functions */
+import * as utility from '../functions/utility.function';
 
 const UserContainer = () => {
     const dispatch = useDispatch();
@@ -32,24 +36,29 @@ const UserContainer = () => {
         isActive: ''
     })
 
+    const [displayUsers, setDisplayUsers] = useState([]);
+
     /** Socket */
     const socket = useContext(SocketContext);
 
     /** Redux States */
     const { userAddModal, userUpdateModal } = useSelector(state => state.modalReducer);
-    const { loader } = useSelector(state => state.loaderReducer);
     const { validationErrors } = useSelector(state => state.notificationReducer);
     const { users, selectedUser } = useSelector(state => state.userReducer);
 
     /** Socket Listeners */
     useEffect(() => {
-        dispatch(fetchUser());
+        dispatch(fetchUser()); 
         socket.on('ADD_USER', user => dispatch(createUserSocket(user)));
         socket.on('UPDATE_USER', data => dispatch(updateUserSocket(data.id, data.user)));
         socket.on('DELETE_USER', user => dispatch(deleteUserSocket(user)));
-
+        
         return () => socket.disconnect();
     },[]);
+
+    useEffect(() => {
+        setDisplayUsers(users);
+    }, [users]);
 
     useEffect(() => {
         populateUpdateData();
@@ -109,14 +118,32 @@ const UserContainer = () => {
         .catch(() => {});
     }
 
+    const selectUpdateItem = (user) => {
+        dispatch(selectUpdateUser(user));
+        populateUpdateData();
+    }
+
     const handleDelete = (user) => {
         dispatch(selectDeleteUser(user));
         dispatch(deleteUser(user._id));
     }
 
-    const selectUpdateItem = (user) => {
-        dispatch(selectUpdateUser(user));
-        populateUpdateData();
+    const handleSearch = (e) => {
+        e.preventDefault();
+    
+        setDisplayUsers(utility.search(users, 'name', e.target.value));
+    }
+
+    const sortByDateRange = () => {
+        setDisplayUsers(utility.sortByDateRange(users, "createdAt", '2021-11-05', '2022-11-02'));
+    }
+
+    const sortByAscending = (fieldName) => {
+        setDisplayUsers(utility.sortByAscending(users, fieldName));
+    }
+
+    const sortByDescending = (fieldName) => {
+        setDisplayUsers(utility.sortByDescending(users, fieldName));
     }
 
     /** Helper Functions */
@@ -139,17 +166,15 @@ const UserContainer = () => {
     }
 
     return (
-        <div className="w-full">
-            <UserHeader totalUsers={users.length} showModal={handleUserAddModalShow}/>
-            <UserList 
-                loader={loader} 
-                users={users}
-                updateButton={selectUpdateItem}
-                deleteButton={handleDelete}
-                formatDate={formatDate}
+        <div className="w-full px-10 py-10">
+            <UserHeader 
+                showModal={handleUserAddModalShow}
+                handleSearch={handleSearch}
+                sortByAscending={sortByAscending}
+                sortByDescending={sortByDescending}
             />
+            
             <ModalAdd 
-                loader={loader}
                 modal={userAddModal}
                 inputs={addInputs}
                 validationErrors={validationErrors}
@@ -158,7 +183,6 @@ const UserContainer = () => {
                 handleCancel={handleCancel}
             />
             <ModalUpdate
-                loader={loader}
                 modal={userUpdateModal}
                 user={selectedUser}
                 formatDate={formatDate}
@@ -168,6 +192,16 @@ const UserContainer = () => {
                 handleUpdate={handleUpdate}
                 handleCancel={handleCancel}
             />
+            <Routes>
+                <Route path="list" element={
+                    <UserList  
+                        users={displayUsers}
+                        updateButton={selectUpdateItem}
+                        deleteButton={handleDelete}
+                        formatDate={formatDate}
+                    />
+                }/>
+            </Routes>
         </div>
     )
 }

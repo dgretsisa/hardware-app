@@ -1,6 +1,5 @@
 import { Types } from '../types/user.types';
 import UserAPI from '../../axios/services/user.service';
-import * as loader from './loader.action';
 import * as modal from './modal.action';
 import * as notification from './notification.action';
 
@@ -95,12 +94,10 @@ const deleteUserFailed = () => {
 /** Dispatcher Functions */
 export const createUser = (resource) => (dispatch) => {
     dispatch(createUserRequest(resource));
-    dispatch(loader.loaderShow());
 
     return new Promise((resolve, reject) => { 
         UserAPI.create(resource)
             .then(({data}) => {
-                dispatch(loader.loaderHide());
                 dispatch(modal.modalHide());
                 resolve();
             })
@@ -119,7 +116,6 @@ export const createUser = (resource) => (dispatch) => {
                     dispatch(notification.assignGeneralError(generalErrors));
                 }
 
-                dispatch(loader.loaderHide());
                 reject();
         });
     });
@@ -127,12 +123,10 @@ export const createUser = (resource) => (dispatch) => {
 
 export const fetchUser = () => (dispatch) => {
     dispatch(fetchUserRequest());
-    dispatch(loader.loaderShow());
 
     return UserAPI.fetch()
         .then(({data}) => {
             dispatch(fetchUserSuccess(data));
-            dispatch(loader.loaderHide());
         })
         .catch((error) => {
             dispatch(fetchUserFailed());
@@ -143,7 +137,6 @@ export const fetchUser = () => (dispatch) => {
             };
 
             dispatch(notification.assignGeneralError(generalErrors));
-            dispatch(loader.loaderHide());
         });
 }
 
@@ -154,12 +147,10 @@ export const selectUpdateUser = (user) => (dispatch) => {
 
 export const updateUser = (id, resource) => (dispatch) => {
     dispatch(updateUserRequest(resource));
-    dispatch(loader.loaderShow());
 
     return new Promise((resolve, reject) => { 
         UserAPI.update(id, resource)
             .then(({data}) => {
-                dispatch(loader.loaderHide());
                 dispatch(modal.modalHide());
                 resolve();
             })
@@ -178,7 +169,6 @@ export const updateUser = (id, resource) => (dispatch) => {
                     dispatch(notification.assignGeneralError(generalErrors))
                 }
 
-                dispatch(loader.loaderHide())
                 reject();
         });
     });
@@ -194,7 +184,6 @@ export const deleteUser = (id) => (dispatch) => {
     return new Promise((resolve, reject) => {
         UserAPI.delete(id)
             .then(({data}) => {
-                dispatch(loader.loaderHide());
                 dispatch(modal.modalHide());
                 resolve();
             })
@@ -213,7 +202,6 @@ export const deleteUser = (id) => (dispatch) => {
                     dispatch(notification.assignGeneralError(generalErrors))
                 }
 
-                dispatch(loader.loaderHide())
                 reject();
         });
     });

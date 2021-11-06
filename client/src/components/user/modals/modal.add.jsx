@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react'
 
 import { Dialog, Transition } from '@headlessui/react';
-import Loader from '../../loader/loader';
 
-const ModalAdd = ({ loader, modal, inputs, validationErrors, handleInputChange, handleCreate, handleCancel }) => {
+const ModalAdd = ({ modal, inputs, validationErrors, handleInputChange, handleCreate, handleCancel }) => {
     return (
         <>
             <Transition appear show={modal} as={Fragment}>
@@ -46,70 +45,65 @@ const ModalAdd = ({ loader, modal, inputs, validationErrors, handleInputChange, 
                         as="h3"
                         className="text-xl text-center font-medium leading-6 text-gray-600 tracking-wider"
                         >
-                        { loader ? null : 'Create New User'}
+                        Create New User
                         </Dialog.Title>
                             <div className="my-8">
-                                { loader ?
-                                    <Loader /> :
-                                    <form  onSubmit={handleCreate} className="flex flex-col gap-7 text-gray-600 text-sm">
-                                        <div className="flex items-center gap-5">
-                                            <label><span className="text-red-600">*</span> Full Name</label>
-                                            <div className="flex-1">
-                                                <input 
-                                                    autoComplete="off"
-                                                    name="name" 
-                                                    value={inputs.name} 
-                                                    onChange={handleInputChange} 
-                                                    type="text" 
-                                                    className={`${validationErrors.name && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
-                                                />
-                                                {validationErrors.name &&
-                                                    <p className="text-red-600 text-xs pt-1">{validationErrors.name}</p>
-                                                }
-                                            </div>
+                                <form  onSubmit={handleCreate} className="flex flex-col gap-7 text-gray-600 text-sm">
+                                    <div className="flex items-center gap-5">
+                                        <label><span className="text-red-600">*</span> Full Name</label>
+                                        <div className="flex-1">
+                                            <input 
+                                                autoComplete="off"
+                                                name="name" 
+                                                value={inputs.name} 
+                                                onChange={handleInputChange} 
+                                                type="text" 
+                                                className={`${validationErrors.name && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
+                                            />
+                                            {validationErrors.name &&
+                                                <p className="text-red-600 text-xs pt-1">{validationErrors.name}</p>
+                                            }
                                         </div>
-                                        
-                                        <div className="flex items-center gap-5">
-                                            <label><span className="text-red-600">*</span> Username</label>
-                                            <div className="flex-1">
-                                                <input
-                                                    autoComplete="off"
-                                                    name="username" 
-                                                    value={inputs.username}
-                                                    onChange={handleInputChange} 
-                                                    type="text" 
-                                                    className={`${validationErrors.username && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
-                                                />
-                                                {validationErrors.username &&
-                                                    <p className="text-red-600 text-xs pt-1">{validationErrors.username}</p>
-                                                }
-                                            </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-5">
+                                        <label><span className="text-red-600">*</span> Username</label>
+                                        <div className="flex-1">
+                                            <input
+                                                autoComplete="off"
+                                                name="username" 
+                                                value={inputs.username}
+                                                onChange={handleInputChange} 
+                                                type="text" 
+                                                className={`${validationErrors.username && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
+                                            />
+                                            {validationErrors.username &&
+                                                <p className="text-red-600 text-xs pt-1">{validationErrors.username}</p>
+                                            }
                                         </div>
-                                        <div className="flex items-center gap-5">
-                                            <label><span className="text-red-600">*</span> Password</label>
-                                            <div className="flex-1">
-                                                <input 
-                                                    autoComplete="off"
-                                                    name="password" 
-                                                    value={inputs.password} 
-                                                    onChange={handleInputChange} 
-                                                    type="password" 
-                                                    className={`${validationErrors.password && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
-                                                />
-                                                {validationErrors.password &&
-                                                    <p className="text-red-600 text-xs pt-1">{validationErrors.password}</p>
-                                                }
-                                            </div>
+                                    </div>
+                                    <div className="flex items-center gap-5">
+                                        <label><span className="text-red-600">*</span> Password</label>
+                                        <div className="flex-1">
+                                            <input 
+                                                autoComplete="off"
+                                                name="password" 
+                                                value={inputs.password} 
+                                                onChange={handleInputChange} 
+                                                type="password" 
+                                                className={`${validationErrors.password && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
+                                            />
+                                            {validationErrors.password &&
+                                                <p className="text-red-600 text-xs pt-1">{validationErrors.password}</p>
+                                            }
                                         </div>
-                                    </form>
-                                }
+                                    </div>
+                                </form>
                             </div>
-                            {loader ? null :
-                                <div className="flex justify-end gap-5 mt-4">
-                                    <button onClick={handleCancel} className="rounded text-gray-600 text-sm bg-gray-200 px-4 py-2 border hover:bg-gray-300">Cancel</button>
-                                    <button onClick={handleCreate} className="rounded text-white text-sm bg-green-700 px-4 py-2 hover:bg-green-800">Create</button>
-                                </div>
-                            }
+                            <div className="flex justify-end gap-5 mt-4">
+                                <button onClick={handleCancel} className="rounded text-gray-600 text-sm bg-gray-200 px-4 py-2 border hover:bg-gray-300">Cancel</button>
+                                <button onClick={handleCreate} className="rounded text-white text-sm bg-green-700 px-4 py-2 hover:bg-green-800">Create</button>
+                            </div>
                     </div>
                     </Transition.Child>
                 </div>

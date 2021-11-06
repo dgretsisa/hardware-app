@@ -2,9 +2,8 @@ import React, { Fragment } from 'react'
 
 import { Dialog, Transition } from '@headlessui/react';
 import { UserCircleIcon, PencilAltIcon, CheckCircleIcon } from '@heroicons/react/solid';
-import Loader from '../../loader/loader';
 
-const ModalUpdate = ({ loader, modal, user, inputs, validationErrors, handleInputChange, handleUpdate, handleCancel, formatDate }) => {
+const ModalUpdate = ({ modal, user, inputs, validationErrors, handleInputChange, handleUpdate, handleCancel, formatDate }) => {
     return (
         <>
             <Transition appear show={modal} as={Fragment}>
@@ -70,8 +69,6 @@ const ModalUpdate = ({ loader, modal, user, inputs, validationErrors, handleInpu
                                 </div>
                             </div>
                             <div className="w-1/2 pl-5 bg-gray-200 p-5 rounded">
-                                { loader ?
-                                    <Loader /> :
                                 <form onSubmit={handleUpdate} className="flex flex-col gap-7 text-gray-600 text-sm">
                                     <div className="flex justify-center gap-2 pt-10">
                                         <PencilAltIcon className="w-5 text-gray-500"/>
@@ -138,13 +135,10 @@ const ModalUpdate = ({ loader, modal, user, inputs, validationErrors, handleInpu
                                         </div>
                                     </div>
                                 </form>
-                                }
-                                {loader ? null :
                                 <div className="flex justify-end gap-5 mt-8">
                                     <button onClick={handleCancel} className="rounded text-gray-600 text-sm bg-white px-4 py-2 border hover:bg-gray-400">Cancel</button>
                                     <button onClick={handleUpdate} className="rounded text-white text-sm bg-green-700 px-4 py-2 hover:bg-green-800">Update</button>
                                 </div>
-                                }
                             </div>
                         </div>
                     </div>
