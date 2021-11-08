@@ -1,9 +1,10 @@
 import React from 'react'
 import { useNavigate } from 'react-router'
 
+
 import { UsersIcon, EyeIcon, CubeIcon, DatabaseIcon, CurrencyDollarIcon } from '@heroicons/react/solid'
 
-const Dashboard = () => {
+const Dashboard = ({ users }) => {
     const navigate = useNavigate();
 
     return (
@@ -11,8 +12,8 @@ const Dashboard = () => {
             <div className="flex flex-col divide-y-4 w-1/6 bg-gradient-to-r from-red-500 to-red-400 text-white rounded">
                 <div className="flex justify-between items-end gap-10 p-5">
                     <div>
-                        <p className="text-2xl">2</p>
-                        <p className="uppercase">Active Users</p>
+                        <p className="text-2xl">{ users.length }</p>
+                        <p className="uppercase">Users</p>
                     </div>
                     <UsersIcon className="h-7 w-7 flex-1" />
                 </div>

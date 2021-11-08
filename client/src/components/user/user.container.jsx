@@ -10,7 +10,7 @@ import ModalUpdate from './modals/modal.update';
 
 /** Redux */
 import { userAddModalShow } from '../../redux/action/modal.action';
-import { createUser, createUserSocket, fetchUser, selectUpdateUser, updateUser, updateUserSocket, selectDeleteUser, deleteUser, deleteUserSocket } from '../../redux/action/user.action';
+import { createUser, selectUpdateUser, updateUser, selectDeleteUser, deleteUser } from '../../redux/action/user.action';
 import { cancel, clear } from '../../redux/action/general.action';
 
 /** Context */
@@ -19,8 +19,7 @@ import { SocketContext } from '../../context/websocket.context';
 /** Utility Functions */
 import * as utility from '../functions/utility.function';
 
-const UserContainer = () => {
-    const navigate = useNavigate();
+const UserContainer = ({ users }) => {
     const dispatch = useDispatch();
 
     /** Input Fields */
@@ -45,18 +44,9 @@ const UserContainer = () => {
     /** Redux States */
     const { userAddModal, userUpdateModal } = useSelector(state => state.modalReducer);
     const { validationErrors } = useSelector(state => state.notificationReducer);
-    const { users, selectedUser } = useSelector(state => state.userReducer);
+    const { selectedUser } = useSelector(state => state.userReducer);
 
     /** Socket Listeners */
-    useEffect(() => {
-        dispatch(fetchUser()); 
-        socket.on('ADD_USER', user => dispatch(createUserSocket(user)));
-        socket.on('UPDATE_USER', data => dispatch(updateUserSocket(data.id, data.user)));
-        socket.on('DELETE_USER', user => dispatch(deleteUserSocket(user)));
-        
-        return () => socket.disconnect();
-    },[]);
-
     useEffect(() => {
         setDisplayUsers(users);
     }, [users]);
