@@ -12,7 +12,6 @@ import ModalUpdate from './modals/modal.update';
 import { userAddModalShow } from '../../redux/action/modal.action';
 import { createUser, createUserSocket, fetchUser, selectUpdateUser, updateUser, updateUserSocket, selectDeleteUser, deleteUser, deleteUserSocket } from '../../redux/action/user.action';
 import { cancel, clear } from '../../redux/action/general.action';
-import { logout } from '../../redux/action/auth.action';
 
 /** Context */
 import { SocketContext } from '../../context/websocket.context';
@@ -167,16 +166,8 @@ const UserContainer = () => {
         });
     }
 
-    const handleLogout = (e) => {
-        e.preventDefault();
-
-        dispatch(logout());
-        navigate('/');
-    }
-
     return (
         <div className="w-full px-10 py-10">
-            <button onClick={handleLogout} className="bg-red-500 text-white p-5">Log out</button>
             <UserHeader 
                 showModal={handleUserAddModalShow}
                 handleSearch={handleSearch}

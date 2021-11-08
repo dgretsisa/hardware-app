@@ -36,7 +36,7 @@ const Login = () => {
         e.preventDefault();
         
         dispatch(login(credentials))
-        .then(data => navigate('users'))
+        .then(data => navigate('dashboard'))
         .catch(error => {});
     }
 

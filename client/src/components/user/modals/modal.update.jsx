@@ -48,7 +48,7 @@ const ModalUpdate = ({ modal, user, inputs, validationErrors, handleInputChange,
                                     <UserCircleIcon className="w-40 text-gray-500"/>
                                     <h4 className="text-gray-700 text-lg">{user.name}</h4>
                                     <p className="text-gray-600 text-sm">{user.username}</p>
-                                    <p className={`w-28 text-xs text-center mt-3 uppercase ${user.isActive ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-800'} p-1.5 rounded-full`}>{user.role}</p>
+                                    <p className={`w-28 text-xs text-center mt-3 uppercase ${user.isActive ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-500'} p-1.5 rounded-full`}>{user.role}</p>
                                 </div>
                                 <div className="divide-y-4 divide-gray-200">
                                     <div className="flex gap-3 text-gray-600 text-sm p-3">

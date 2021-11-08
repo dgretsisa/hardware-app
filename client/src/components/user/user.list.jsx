@@ -9,25 +9,25 @@ const UserList = ({ users, updateButton, deleteButton, formatDate }) => {
             <table className="w-full leading-normal">
                 <thead>
                     <tr>
-                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-sm  font-semibold">
+                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-xs  uppercase">
                             Name
                         </th>
-                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-sm  font-semibold">
+                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-xs  uppercase">
                             Role
                         </th>
-                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-sm  font-semibold">
+                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-xs  uppercase">
                             Username
                         </th>
-                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-sm  font-semibold">
+                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-xs  uppercase">
                             Created
                         </th>
-                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-sm  font-semibold">
+                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-xs  uppercase">
                             Updated
                         </th>
-                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-sm  font-semibold">
+                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-xs  uppercase">
                             Status
                         </th>
-                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-sm  font-semibold">
+                        <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-700  text-left text-xs  uppercase">
                             
                         </th>
                     </tr>
@@ -69,7 +69,7 @@ const UserList = ({ users, updateButton, deleteButton, formatDate }) => {
                                 <td className="px-5 border-b border-gray-200 bg-white text-sm">
                                     <span className="relative inline-block px-3 py-1  leading-tight">
                                         <span aria-hidden="true" className={`${user.isActive ? 'bg-yellow-100': 'bg-red-200' } absolute inset-0 opacity-50 rounded-full`}></span>
-                                        <span className={`relative ${user.isActive ? 'text-yellow-600': 'text-red-900'}`}>
+                                        <span className={`relative ${user.isActive ? 'text-yellow-600': 'text-red-500'}`}>
                                             {user.isActive ? 'active': 'inactive'}
                                         </span>
                                     </span>

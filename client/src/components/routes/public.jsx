@@ -6,7 +6,7 @@ const PublicRoute = ({ element }) => {
     /** Redux state */
     const { isAuthenticated, authUser } = useSelector(state => state.authReducer);
     
-    return isAuthenticated ? <Navigate to={-1} replace /> : element;
+    return isAuthenticated ? <Navigate to="dashboard" replace /> : element;
 }
 
 export default PublicRoute

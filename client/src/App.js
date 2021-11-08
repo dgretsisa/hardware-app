@@ -1,21 +1,23 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
+/** Routes */
+import PrivateRoute from './components/routes/private';
+import PublicRoute from './components/routes/public';
+
+/** Layouts */
+import Layout from './components/layouts/layout';
+
 /** Components */
-import PrivateRoute from './components/private';
-import PublicRoute from './components/public';
 import Login from './components/login';
-import Users from './components/user/user.container';
 
 function App() {
-  
-
   return (
     <div className="App w-full">
       <Router>
         <Routes>
-          <Route path="/" element={<PublicRoute element={<Login/>} />} />
-          <Route path="users" element={<PrivateRoute element={<Users/>} />} />
+          <Route exact path="/" element={<PublicRoute element={<Login/>} />} />
+          <Route path="/*" element={ <PrivateRoute element={<Layout/>} /> } />
         </Routes>
       </Router>
     </div>
