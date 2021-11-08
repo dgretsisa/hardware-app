@@ -7,7 +7,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="w-full px-10 py-20 flex justify-center items-center gap-10 text-xs">
+        <div className="w-full px-10 flex justify-center items-center gap-10 text-xs">
             <div className="flex flex-col divide-y-4 w-1/6 bg-gradient-to-r from-red-500 to-red-400 text-white rounded">
                 <div className="flex justify-between items-end gap-10 p-5">
                     <div>

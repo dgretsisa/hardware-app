@@ -7,7 +7,7 @@ const UserHeader = ({ showModal, handleSearch, sortByAscending, sortByDescending
         <div className="flex items-center bg-gray-200 p-3 gap-5 px-5">
             <div className="flex flex-1 items-center">
                 <div className="flex items-center text-gray-700 text-sm gap-5">
-                    <div className="mt-1 mr-24 uppercase">Users</div>
+                    <div className="mt-1 mr-24 uppercase font-bold">Users</div>
                     <Filter sortByAscending={sortByAscending} sortByDescending={sortByDescending} />
                     <button onClick={showModal} className="px-3 py-1.5 mt-1 cursor-pointer rounded bg-white hover:text-yellow-600 hover:bg-yellow-100">+ Create New User</button>
                 </div>

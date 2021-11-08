@@ -167,7 +167,7 @@ const UserContainer = () => {
     }
 
     return (
-        <div className="w-full px-10 py-10">
+        <div className="w-full px-10">
             <UserHeader 
                 showModal={handleUserAddModalShow}
                 handleSearch={handleSearch}
