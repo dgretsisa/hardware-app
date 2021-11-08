@@ -4,10 +4,12 @@ import userReducer from '../reducer/user.reducer';
 import loaderReducer from '../reducer/loader.reducer';
 import modalReducer from '../reducer/modal.reducer';
 import notificationReducer from '../reducer/notification.reducer';
+import authReducer from '../reducer/auth.reducer';
 
 export default combineReducers({
     userReducer: userReducer,
     loaderReducer: loaderReducer,
     modalReducer: modalReducer,
-    notificationReducer: notificationReducer
+    notificationReducer: notificationReducer,
+    authReducer: authReducer
 });

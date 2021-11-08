@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment';
 
@@ -12,6 +12,7 @@ import ModalUpdate from './modals/modal.update';
 import { userAddModalShow } from '../../redux/action/modal.action';
 import { createUser, createUserSocket, fetchUser, selectUpdateUser, updateUser, updateUserSocket, selectDeleteUser, deleteUser, deleteUserSocket } from '../../redux/action/user.action';
 import { cancel, clear } from '../../redux/action/general.action';
+import { logout } from '../../redux/action/auth.action';
 
 /** Context */
 import { SocketContext } from '../../context/websocket.context';
@@ -20,6 +21,7 @@ import { SocketContext } from '../../context/websocket.context';
 import * as utility from '../functions/utility.function';
 
 const UserContainer = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     /** Input Fields */
@@ -165,15 +167,28 @@ const UserContainer = () => {
         });
     }
 
+    const handleLogout = (e) => {
+        e.preventDefault();
+
+        dispatch(logout());
+        navigate('/');
+    }
+
     return (
         <div className="w-full px-10 py-10">
+            <button onClick={handleLogout} className="bg-red-500 text-white p-5">Log out</button>
             <UserHeader 
                 showModal={handleUserAddModalShow}
                 handleSearch={handleSearch}
                 sortByAscending={sortByAscending}
                 sortByDescending={sortByDescending}
             />
-            
+            <UserList  
+                users={displayUsers}
+                updateButton={selectUpdateItem}
+                deleteButton={handleDelete}
+                formatDate={formatDate}
+            />
             <ModalAdd 
                 modal={userAddModal}
                 inputs={addInputs}
@@ -192,16 +207,6 @@ const UserContainer = () => {
                 handleUpdate={handleUpdate}
                 handleCancel={handleCancel}
             />
-            <Routes>
-                <Route path="list" element={
-                    <UserList  
-                        users={displayUsers}
-                        updateButton={selectUpdateItem}
-                        deleteButton={handleDelete}
-                        formatDate={formatDate}
-                    />
-                }/>
-            </Routes>
         </div>
     )
 }

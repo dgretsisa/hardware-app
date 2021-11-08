@@ -14,10 +14,9 @@ const assignValidationError = (errors) => {
     }
 }
 
-const clearLogs = (errors) => {
+const clearLogs = () => {
     return {
-        type: Types.CLEAR_LOGS,
-        payload: { errors }
+        type: Types.CLEAR_LOGS
     }
 }
 

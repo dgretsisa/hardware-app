@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs');
+
+/** Model */
 const User = require('../model/user.model');
 
 const fetch = async () => {
@@ -5,6 +8,11 @@ const fetch = async () => {
 }
 
 const create = async (resource) => {
+    
+    /** Hashing Password */
+    const salt = await bcrypt.genSalt(10);
+    resource.password = await bcrypt.hash(resource.password, salt);
+
     return await User.create(resource);
 }
 

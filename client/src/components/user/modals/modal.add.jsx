@@ -65,7 +65,6 @@ const ModalAdd = ({ modal, inputs, validationErrors, handleInputChange, handleCr
                                             }
                                         </div>
                                     </div>
-                                    
                                     <div className="flex items-center gap-5">
                                         <label><span className="text-red-600">*</span> Username</label>
                                         <div className="flex-1">

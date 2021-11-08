@@ -10,6 +10,10 @@ class GeneralError extends Error {
             return 422;
         }
 
+        if(this instanceof UnauthorizedError) {
+            return 403;
+        }
+
         return 500;
     }
 }
@@ -27,4 +31,12 @@ class ValidationError extends GeneralError {
     }
 }
 
-module.exports = { GeneralError, ValidationError };
+class UnauthorizedError extends GeneralError {
+
+    constructor(message) {
+        super();
+        this.message = message;
+    }
+}
+
+module.exports = { GeneralError, ValidationError, UnauthorizedError };
