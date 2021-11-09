@@ -30,10 +30,15 @@ const formatDate = (date) => {
     return moment(date).format("MMM. DD, YYYY");
 }
 
+const paginate = (array, pageLimit, currentPage) => {
+    return array.slice((currentPage - 1) * pageLimit, currentPage * pageLimit);
+}
+
 export {
     search,
     sortByDateRange,
     sortByAscending,
     sortByDescending,
-    formatDate
+    formatDate,
+    paginate
 }

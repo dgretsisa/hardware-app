@@ -4,7 +4,7 @@ import Filter from '../filter/filter';
 
 const UserHeader = ({ showModal, handleSearch, sortByAscending, sortByDescending }) => {
     return (
-        <div className="flex items-center bg-gray-200 p-3 gap-5 px-5">
+        <div className="flex items-center bg-gray-200 p-1.5 gap-5 px-5">
             <div className="flex flex-1 items-center">
                 <div className="flex items-center text-gray-700 text-sm gap-5">
                     <div className="mt-1 mr-24 uppercase font-bold">Users</div>

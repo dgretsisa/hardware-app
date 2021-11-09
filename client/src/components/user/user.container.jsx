@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import moment from 'moment';
 
+/** Components */
 import UserHeader from './user.header';
 import UserList from './user.list';
 import ModalAdd from './modals/modal.add';
 import ModalUpdate from './modals/modal.update';
+import Pagination from '../common/pagination';
 
 /** Redux */
 import { userAddModalShow } from '../../redux/action/modal.action';
@@ -37,6 +37,10 @@ const UserContainer = ({ users }) => {
     })
 
     const [displayUsers, setDisplayUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageLimit, setPageLimit] = useState(10);
+    const indexEnd = Math.ceil(currentPage * pageLimit);
+    const indexStart = Math.ceil(indexEnd - pageLimit);
 
     /** Socket */
     const socket = useContext(SocketContext);
@@ -48,8 +52,8 @@ const UserContainer = ({ users }) => {
 
     /** Socket Listeners */
     useEffect(() => {
-        setDisplayUsers(users);
-    }, [users]);
+        setDisplayUsers(paginate(users));
+    }, [users, currentPage]);
 
     useEffect(() => {
         populateUpdateData();
@@ -122,19 +126,35 @@ const UserContainer = ({ users }) => {
     const handleSearch = (e) => {
         e.preventDefault();
     
-        setDisplayUsers(utility.search(users, 'name', e.target.value));
+        setDisplayUsers(paginate(utility.search(users, 'name', e.target.value)));
     }
 
     const sortByDateRange = () => {
-        setDisplayUsers(utility.sortByDateRange(users, "createdAt", '2021-11-05', '2022-11-02'));
+        setDisplayUsers(paginate(utility.sortByDateRange(users, "createdAt", '2021-11-05', '2022-11-02')));
     }
 
     const sortByAscending = (fieldName) => {
-        setDisplayUsers(utility.sortByAscending(users, fieldName));
+        setDisplayUsers(paginate(utility.sortByAscending(users, fieldName)));
     }
 
     const sortByDescending = (fieldName) => {
-        setDisplayUsers(utility.sortByDescending(users, fieldName));
+        setDisplayUsers(paginate(utility.sortByDescending(users, fieldName)));
+    }
+
+    const paginate = (array) => {
+        return array.slice(indexStart, indexEnd);
+    }
+
+    const changePage = (page) => {
+        setCurrentPage(page);
+    }
+
+    const prevPage = () => {
+        setCurrentPage(currentPage - 1);
+    }
+
+    const nextPage = () => {
+        setCurrentPage(currentPage + 1);
     }
 
     /** Helper Functions */
@@ -169,6 +189,14 @@ const UserContainer = ({ users }) => {
                 updateButton={selectUpdateItem}
                 deleteButton={handleDelete}
                 formatDate={formatDate}
+            />
+            <Pagination
+                currentPage={currentPage}
+                pageLimit={pageLimit} 
+                totalRecords={users.length}
+                changePage={changePage}
+                prevPage={prevPage}
+                nextPage={nextPage}
             />
             <ModalAdd 
                 modal={userAddModal}
