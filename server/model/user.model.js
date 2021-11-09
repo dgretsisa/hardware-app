@@ -28,4 +28,18 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 });
 
+UserSchema.statics.validateUsername = function(username, id=null) {
+    if(id === null) {
+        return this.find({ username })
+        .then(users => {
+            if(users.length > 0) return Promise.reject('Username already exist!');
+        });
+    }
+    else{
+        return this.find({ _id: { $ne: id }, username }).then(users => {
+            if(users.length > 0) return Promise.reject('Username already exist!');
+        });
+    }
+}
+
 module.exports = mongoose.model('User', UserSchema);
