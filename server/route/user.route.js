@@ -1,7 +1,5 @@
 const express = require('express')
 
-const router = express.Router();
-
 /** Controllers */
 const UserController = require('../controller/user.controller');
 
@@ -10,6 +8,12 @@ const ErrorCatcher = require('../utility/error.catcher');
 
 /** Validator */
 const Validator = require('../validator/user.validator');
+
+/*** Middleware */
+const AuthMiddleware = require('../middleware/auth.middleware');
+
+const router = express.Router();
+router.use(AuthMiddleware);
 
 /** 
  * @route   api/users

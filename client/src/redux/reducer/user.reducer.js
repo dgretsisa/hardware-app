@@ -17,7 +17,7 @@ const reducer = (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 users: [
-                    ...state.users, payload.user
+                    payload.user, ...state.users
                 ]
             };
         case Types.FETCH_USER_SUCCESS:

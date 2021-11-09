@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router'
 
 
-import { UsersIcon, EyeIcon, CubeIcon, DatabaseIcon, CurrencyDollarIcon } from '@heroicons/react/solid'
+import { UsersIcon, EyeIcon, CubeIcon, DatabaseIcon, CurrencyDollarIcon, DocumentTextIcon } from '@heroicons/react/solid'
 
 const Dashboard = ({ users }) => {
     const navigate = useNavigate();
@@ -63,7 +63,7 @@ const Dashboard = ({ users }) => {
                         <p className="text-2xl">15</p>
                         <p className="uppercase">Invoices</p>
                     </div>
-                    <UsersIcon className="h-7 w-7 flex-1" />
+                    <DocumentTextIcon className="h-7 w-7 flex-1" />
                 </div>
                 <div className="flex justify-center items-center gap-2 px-5 py-2 text-indigo-900 font-bold text-center text-xs cursor-pointer">
                     <EyeIcon className="h-5 w-5" /> View Invoices

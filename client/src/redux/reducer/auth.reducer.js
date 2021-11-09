@@ -14,8 +14,7 @@ const reducer = (state = initialState, { type, payload }) => {
                 credentials: payload.credentials
             };
         case Types.LOGIN_SUCCESS:
-            localStorage.setItem("user", JSON.stringify(payload.user));
-            localStorage.setItem("token", JSON.stringify(payload.token));
+            
 
             return {
                 ...state,
@@ -24,9 +23,6 @@ const reducer = (state = initialState, { type, payload }) => {
                 token: payload.user.token
             };
         case Types.LOGOUT:
-            localStorage.removeItem("user");
-            localStorage.removeItem("token");
-
             return {
                 ...state,
                 isAuthenticated: false,

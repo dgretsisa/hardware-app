@@ -26,9 +26,14 @@ const sortByDescending = (data, fieldName) => {
     return [...data].sort((a,b) => b[fieldName].localeCompare(a[fieldName]));
 }
 
+const formatDate = (date) => {
+    return moment(date).format("MMM. DD, YYYY");
+}
+
 export {
     search,
     sortByDateRange,
     sortByAscending,
-    sortByDescending
+    sortByDescending,
+    formatDate
 }

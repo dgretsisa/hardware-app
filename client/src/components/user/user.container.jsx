@@ -144,7 +144,7 @@ const UserContainer = ({ users }) => {
     }
 
     const formatDate = (date) => {
-        return moment(date).format("MMM. DD, YYYY");
+        return utility.formatDate(date);
     }
 
     const populateUpdateData = () => {

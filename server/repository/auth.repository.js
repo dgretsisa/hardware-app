@@ -10,7 +10,7 @@ const { ValidationError } = require('../utility/error.class');
 const login = async (resource) => {
     const { username, password } = resource;
     
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).select('+password');
 
     if(!user) {
         throw new ValidationError('Failed to login', { credential: 'You have entered an unknown credential' });

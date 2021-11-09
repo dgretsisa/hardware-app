@@ -1,12 +1,7 @@
-import axios from 'axios'
-
-const API = axios.create({
-    baseURL: "/auth",
-    responseType: "json"
-});
+import API from '../config/axios.config';
 
 class AuthAPI {
-    login = (credentials) => API.post('/login', credentials);
+    login = (credentials) => API.post('/auth/login', credentials);
 }
 
 export default new AuthAPI();

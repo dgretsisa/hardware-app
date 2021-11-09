@@ -1,5 +1,6 @@
 import { Types } from "../types/auth.types";
 import AuthAPI from '../../axios/services/auth.service';
+import API from '../../axios/config/axios.config';
 import * as notification from './notification.action';
 
 const loginRequest = (credentials) => {
@@ -30,6 +31,12 @@ export const login = (credentials) => (dispatch) => {
     return new Promise((resolve, reject) => {
         AuthAPI.login(credentials)
             .then(({data}) => {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                localStorage.setItem("token", JSON.stringify(data.token));
+
+                /** Just setting the api headers with token after login */
+                API.defaults.headers.authorization = JSON.parse(localStorage.getItem("token"));
+
                 dispatch(loginSuccess(data.user, data.token));
                 dispatch(notification.clearLogs());
                 resolve(data);
@@ -55,5 +62,8 @@ export const login = (credentials) => (dispatch) => {
 }
 
 export const logout = () => (dispatch) => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
     dispatch({ type: Types.LOGOUT });
 }

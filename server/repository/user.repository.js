@@ -3,12 +3,17 @@ const bcrypt = require('bcryptjs');
 /** Model */
 const User = require('../model/user.model');
 
+/** Utility Function */
+const utility = require('../utility/utility.function');
+
 const fetch = async () => {
-    return await User.find({});
+    return await User.find({}).sort({createdAt: 'desc'});
 }
 
 const create = async (resource) => {
-    
+    /** Capitalize Name */
+    resource.name = utility.capitalizeWord(resource.name);
+
     /** Hashing Password */
     const salt = await bcrypt.genSalt(10);
     resource.password = await bcrypt.hash(resource.password, salt);
@@ -21,6 +26,9 @@ const fetchById = async (id) => {
 }
 
 const updateById = async (id, resource) => {
+    /** Capitalize Name */
+    resource.name = utility.capitalizeWord(resource.name);
+    
     return await User.findByIdAndUpdate(id, resource, { new: true });
 }
 
