@@ -35,15 +35,6 @@ const reducer = (state = initialState, { type, payload }) => {
                 ...state,
                 resource: payload.resource
             }
-        case Types.UPDATE_USER_SUCCESS:
-            return {
-                ...state,
-                users: [
-                    ...state.users.map(user => {
-                        return user._id === payload.id ? payload.user : user
-                    })
-                ]
-            };
         case Types.DELETE_USER_REQUEST:
             return {
                 ...state,
@@ -54,6 +45,20 @@ const reducer = (state = initialState, { type, payload }) => {
                 ...state,
                 users: state.users.filter(user => user._id !== payload.user._id)
             }
+        case Types.ADD_USER_SUCCESS:
+            return {
+                ...state,
+                users: [payload.user, ...state.users]
+            }
+        case Types.UPDATE_USER_SUCCESS:
+            return {
+                ...state,
+                users: [
+                    ...state.users.map(user => {
+                        return user._id === payload.user._id ? payload.user : user
+                    })
+                ]
+            };
         default:
             return state;
     }

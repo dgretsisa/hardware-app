@@ -2,7 +2,7 @@ import React from 'react'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 
-const pagination = ({ pageLimit, totalRecords, currentPage, changePage, prevPage, nextPage }) => {
+const pagination = ({ pageLimit, totalRecords, currentPage, handleSelectPage, handlePrevPage, handleNextPage }) => {
 
     const totalPages = Math.ceil(totalRecords/pageLimit);
     const pages = [];
@@ -31,7 +31,7 @@ const pagination = ({ pageLimit, totalRecords, currentPage, changePage, prevPage
                 <div>
                 <div className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                     { currentPage > 1 ?
-                        <button onClick={prevPage} className="cursor-pointer relative inline-flex items-center px-2 py-1.5 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <button onClick={handlePrevPage} className="cursor-pointer relative inline-flex items-center px-2 py-1.5 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                             <span className="sr-only">Previous</span>
                             <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
                         </button>
@@ -41,7 +41,7 @@ const pagination = ({ pageLimit, totalRecords, currentPage, changePage, prevPage
                     { totalPages === 1 ? null:
                         pages.map((page, index) => {
                             return <div
-                                    onClick={() => changePage(page)} 
+                                    onClick={() => handleSelectPage(page)} 
                                     key={index}
                                     aria-current="page" 
                                     className={` ${currentPage == page ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'} cursor-pointer relative inline-flex items-center px-4 py-1.5 border text-sm font-medium`}>
@@ -50,7 +50,7 @@ const pagination = ({ pageLimit, totalRecords, currentPage, changePage, prevPage
                         })
                     }
                     { currentPage < totalPages ?
-                        <button onClick={nextPage} className="cursor-pointer relative inline-flex items-center px-2 py-1.5 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <button onClick={handleNextPage} className="cursor-pointer relative inline-flex items-center px-2 py-1.5 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                             <span className="sr-only">Next</span>
                             <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
                         </button> 

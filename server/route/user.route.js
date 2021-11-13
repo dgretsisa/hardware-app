@@ -1,15 +1,8 @@
 const express = require('express')
 
-/** Controllers */
 const UserController = require('../controller/user.controller');
-
-/** Error Catcher */
 const ErrorCatcher = require('../utility/error.catcher');
-
-/** Validator */
 const Validator = require('../validator/user.validator');
-
-/*** Middleware */
 const AuthMiddleware = require('../middleware/auth.middleware');
 
 const router = express.Router();
@@ -19,7 +12,7 @@ router.use(AuthMiddleware);
  * @route   api/users
  * @desc    GET fetch all users
  * @desc    POST create a user
- * @access  Public
+ * @access  Private
  */
 
 router.route('/')
@@ -27,11 +20,11 @@ router.route('/')
       .post(Validator.create, ErrorCatcher(UserController.create));
 
 /** 
- * @route   api/list/:id
- * @desc    GET fetch a list by id 
- * @desc    PUT update a list by id
- * @desc    DELETE remove a list by id
- * @access  Public
+ * @route   api/users/:id
+ * @desc    GET fetch a user by id 
+ * @desc    PUT update a user by id
+ * @desc    DELETE remove a user by id
+ * @access  Private
  */
 
 router.route('/:id')

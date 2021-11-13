@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 const search = (data, fieldName, searchText) => {
-    const result = data.filter(item => item[fieldName].toLowerCase().includes(searchText.toLowerCase()))
+    const result = data.filter(item => (item[fieldName].toString()).toLowerCase().includes(searchText.toLowerCase()))
     return result;
 }
 
@@ -19,18 +19,18 @@ const sortByDateRange = (data, fieldName, startDate, endDate) => {
 }
 
 const sortByAscending = (data, fieldName) => {
-    return [...data].sort((a,b) => a[fieldName].localeCompare(b[fieldName]));
+    return [...data].sort((a,b) => a[fieldName].toString().localeCompare(b[fieldName].toString(), 'en', {numeric: true}));
 }
 
 const sortByDescending = (data, fieldName) => {
-    return [...data].sort((a,b) => b[fieldName].localeCompare(a[fieldName]));
+    return [...data].sort((a,b) => b[fieldName].toString().localeCompare(a[fieldName].toString(), 'en', {numeric: true}));
 }
 
 const formatDate = (date) => {
     return moment(date).format("MMM. DD, YYYY");
 }
 
-const paginate = (array, pageLimit, currentPage) => {
+const paginate = (array, currentPage, pageLimit) => {
     return array.slice((currentPage - 1) * pageLimit, currentPage * pageLimit);
 }
 

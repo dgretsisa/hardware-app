@@ -4,27 +4,6 @@ import * as modal from './modal.action';
 import * as notification from './notification.action';
 
 /** Action Functions */
-
-const createUserRequest = (resource) => {
-    return {
-        type: Types.CREATE_USER_REQUEST,
-        payload: { resource }
-    }
-}
-
-const createUserSuccess = (user) => {
-    return {
-        type: Types.CREATE_USER_SUCCESS,
-        payload: { user }
-    }
-}
-
-const createUserFailed = () => {
-    return {
-        type: Types.CREATE_USER_FAILED
-    }
-}
-
 const fetchUserRequest = () => {
     return {
         type: Types.FETCH_USER_REQUEST
@@ -58,13 +37,6 @@ const updateUserRequest = (resource) => {
     }
 }
 
-const updateUserSuccess = (id, user) => {
-    return {
-        type: Types.UPDATE_USER_SUCCESS,
-        payload: { id, user }
-    }
-}
-
 const updateUserFailed = () => {
     return {
         type: Types.UPDATE_USER_FAILED
@@ -92,35 +64,6 @@ const deleteUserFailed = () => {
 }
 
 /** Dispatcher Functions */
-export const createUser = (resource) => (dispatch) => {
-    dispatch(createUserRequest(resource));
-
-    return new Promise((resolve, reject) => { 
-        UserAPI.create(resource)
-            .then(({data}) => {
-                dispatch(modal.modalHide());
-                resolve();
-            })
-            .catch((error) => {
-                dispatch(createUserFailed());
-
-                const generalErrors = {
-                    status: error.response.status,
-                    message: error.response.statusText
-                };
-                
-                if(error.response.status === 422) {
-                    dispatch(notification.assignValidationError(error.response.data.errors));
-                }
-                else {
-                    dispatch(notification.assignGeneralError(generalErrors));
-                }
-
-                reject();
-        });
-    });
-}
-
 export const fetchUser = () => (dispatch) => {
     dispatch(fetchUserRequest());
 
@@ -143,35 +86,6 @@ export const fetchUser = () => (dispatch) => {
 export const selectUpdateUser = (user) => (dispatch) => {
     dispatch(assignSelectedUser(user));
     dispatch(modal.userUpdateModalShow());
-}
-
-export const updateUser = (id, resource) => (dispatch) => {
-    dispatch(updateUserRequest(resource));
-
-    return new Promise((resolve, reject) => { 
-        UserAPI.update(id, resource)
-            .then(({data}) => {
-                dispatch(modal.modalHide());
-                resolve();
-            })
-            .catch((error) => {
-                dispatch(updateUserFailed());
-
-                const generalErrors = {
-                    status: error.response.status,
-                    message: error.response.statusText
-                };
-                
-                if(error.response.status === 422) {
-                    dispatch(notification.assignValidationError(error.response.data.errors))
-                }
-                else {
-                    dispatch(notification.assignGeneralError(generalErrors))
-                }
-
-                reject();
-        });
-    });
 }
 
 export const selectDeleteUser = (user) => (dispatch) => {
@@ -208,14 +122,65 @@ export const deleteUser = (id) => (dispatch) => {
 }
 
 /** Socket Dispatcher Functions */
-export const createUserSocket = (user) => (dispatch) => {
-    dispatch(createUserSuccess(user));
-}
-
-export const updateUserSocket = (id, user) => (dispatch) => {
-    dispatch(updateUserSuccess(id, user));
-}
-
 export const deleteUserSocket = (user) => (dispatch) => {
     dispatch(deleteUserSuccess(user));
+}
+
+/** New Actions */
+const addUserSuccess = (user) => {
+    return {
+        type: Types.ADD_USER_SUCCESS,
+        payload: { user }
+    }
+}
+
+const updateUserSuccess = (user) => {
+    return {
+        type: Types.UPDATE_USER_SUCCESS,
+        payload: { user }
+    }
+}
+
+export const addUser = (resource) => (dispatch) => {
+    return new Promise((resolve, reject) => { 
+        UserAPI.create(resource)
+            .then(({data}) => {
+                dispatch(notification.assignSuccessMessage('Created', 'Product was created successfully'));
+                dispatch(notification.clearLogs());
+                resolve();
+            })
+            .catch((error) => {
+                const generalErrors = { status: error.response.status, message: error.response.statusText, title: 'Error' };
+                
+                if(error.response.status === 422) dispatch(notification.assignValidationError(error.response.data.errors))
+                else dispatch(notification.assignGeneralError(generalErrors))
+                reject();
+            });
+    })
+}
+
+export const updateUser = (id, resource) => (dispatch) => {
+    return new Promise((resolve, reject) => { 
+        UserAPI.update(id, resource)
+            .then(({data}) => {
+                dispatch(notification.assignSuccessMessage('Updated', 'User was updated successfully'));
+                dispatch(notification.clearLogs());
+                resolve();
+            })
+            .catch((error) => {
+                const generalErrors = { status: error.response.status, message: error.response.statusText, title: 'Error' };
+                
+                if(error.response.status === 422) dispatch(notification.assignValidationError(error.response.data.errors))
+                else dispatch(notification.assignGeneralError(generalErrors))
+                reject();
+            });
+    })
+}
+
+export const addUserSocket = (user) => (dispatch) => {
+    dispatch(addUserSuccess(user))
+}
+
+export const updateUserSocket = (user) => (dispatch) => {
+    dispatch(updateUserSuccess(user))
 }

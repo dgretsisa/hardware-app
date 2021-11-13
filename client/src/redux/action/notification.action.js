@@ -14,6 +14,19 @@ const assignValidationError = (errors) => {
     }
 }
 
+const assignSuccessMessage = (title, message) => {
+    return {
+        type: Types.ASSIGN_SUCCESS_MESSAGE,
+        payload: { title, message }
+    }
+}
+
+const hideAlert = () => {
+    return {
+        type: Types.HIDE_ALERT
+    }
+}
+
 const clearLogs = () => {
     return {
         type: Types.CLEAR_LOGS
@@ -23,5 +36,7 @@ const clearLogs = () => {
 export {
     assignGeneralError,
     assignValidationError,
-    clearLogs
+    clearLogs,
+    hideAlert,
+    assignSuccessMessage
 }

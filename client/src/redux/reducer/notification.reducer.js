@@ -2,7 +2,10 @@ import { Types } from '../types/notification.types';
 
 const initialState = {
     generalErrors: {},
-    validationErrors: {}
+    validationErrors: {},
+    alertStatus: null,
+    alertMessage: null,
+    alertMessageTitle: null,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -15,7 +18,25 @@ const reducer = (state = initialState, { type, payload }) => {
         case Types.ASSIGN_GENERAL_ERROR:
             return {
                 ...state,
-                generalErrors: payload.errors
+                generalErrors: payload.errors,
+                alertStatus: 'error',
+                alertMessage: payload.errors.message,
+                alertMessageTitle: payload.errors.title
+            };
+        case Types.ASSIGN_SUCCESS_MESSAGE:
+            return {
+                ...state,
+                alertStatus: 'success',
+                alertMessage: payload.message,
+                alertMessageTitle: payload.title
+            };
+        case Types.HIDE_ALERT:
+            return {
+                ...state,
+                generalErrors: {},
+                alertStatus: null,
+                alertMessage: null,
+                alertMessageTitle: null,
             };
         case Types.CLEAR_LOGS:
             return {

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 const PublicRoute = ({ element }) => {
     /** Redux state */
-    const { isAuthenticated, authUser } = useSelector(state => state.authReducer);
+    const { isAuthenticated } = useSelector(state => state.authReducer);
     
     return isAuthenticated ? <Navigate to="dashboard" replace /> : element;
 }

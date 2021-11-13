@@ -1,15 +1,16 @@
 const express = require('express');
 
+const AuthController = require('../controller/auth.controller');
+const ErrorCatcher = require('../utility/error.catcher');
+const authMiddleware = require('../middleware/auth.middleware');
+
 const router = express.Router();
 
-/** Controller */
-const AuthController = require('../controller/auth.controller');
-
-/** Error Catcher */
-const ErrorCatcher = require('../utility/error.catcher');
-
-/** Middleware */
-const authMiddleware = require('../middleware/auth.middleware');
+/** 
+ * @route   auth/login
+ * @desc    POST login a user
+ * @access  Public
+ */
 
 router.route('/login').post(ErrorCatcher(AuthController.login));
 

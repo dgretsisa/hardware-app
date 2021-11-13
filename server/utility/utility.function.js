@@ -8,6 +8,26 @@ const capitalizeWord = (words) => {
     return splittedWords.join(" ");
 }
 
+const broadcast = (req, eventName, eventData) => {
+    const socket = req.app.get('socket');
+    socket.emit(eventName, eventData);
+}
+
+const numberValidator = (value, fieldname) => {
+    try {
+        const quantity = eval(value);
+        if(quantity <= 0) {
+            return Promise.reject(`${fieldname} must be greater than 0!`)
+        }
+
+        return true;
+    } catch (error) {
+        return Promise.reject(`${fieldname} must be a number!`);
+    }
+}
+
 module.exports = {
-    capitalizeWord
+    capitalizeWord,
+    broadcast,
+    numberValidator
 }

@@ -19,7 +19,7 @@ import { SocketContext } from '../../context/websocket.context';
 /** Utility Functions */
 import * as utility from '../functions/utility.function';
 
-const UserContainer = ({ users }) => {
+const UserContainer = () => {
     const dispatch = useDispatch();
 
     /** Input Fields */
@@ -46,6 +46,7 @@ const UserContainer = ({ users }) => {
     const socket = useContext(SocketContext);
 
     /** Redux States */
+    const { users } = useSelector(state => state.userReducer);
     const { userAddModal, userUpdateModal } = useSelector(state => state.modalReducer);
     const { validationErrors } = useSelector(state => state.notificationReducer);
     const { selectedUser } = useSelector(state => state.userReducer);

@@ -5,11 +5,13 @@ import loaderReducer from '../reducer/loader.reducer';
 import modalReducer from '../reducer/modal.reducer';
 import notificationReducer from '../reducer/notification.reducer';
 import authReducer from '../reducer/auth.reducer';
+import productReducer from '../reducer/product.reducer';
 
 export default combineReducers({
     userReducer: userReducer,
     loaderReducer: loaderReducer,
     modalReducer: modalReducer,
     notificationReducer: notificationReducer,
-    authReducer: authReducer
+    authReducer: authReducer,
+    productReducer: productReducer
 });

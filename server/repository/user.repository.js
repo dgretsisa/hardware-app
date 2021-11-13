@@ -1,9 +1,6 @@
 const bcrypt = require('bcryptjs');
 
-/** Model */
 const User = require('../model/user.model');
-
-/** Utility Function */
 const utility = require('../utility/utility.function');
 
 const fetch = async () => {
@@ -27,7 +24,7 @@ const fetchById = async (id) => {
 
 const updateById = async (id, resource) => {
     /** Capitalize Name */
-    resource.name = utility.capitalizeWord(resource.name);
+    resource.name ? resource.name = utility.capitalizeWord(resource.name) : null;
     
     return await User.findByIdAndUpdate(id, resource, { new: true });
 }

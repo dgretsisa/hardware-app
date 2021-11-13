@@ -9,7 +9,7 @@ const LayoutBreadcrumbs = () => {
     const pathnames = pathname.split('/').filter(x => x);
     
     return (
-        <div className="w-full px-10 py-3">
+        <div className="w-full px-10 py-5">
             <ul className="flex divide-x gap-3 text-gray-500 uppercase text-xs">
                 {(pathnames.length === 1) && (pathnames[0] === 'dashboard')  ? null:
                     <li key="a" className="flex items-center gap-1">
