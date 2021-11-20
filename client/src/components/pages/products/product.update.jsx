@@ -59,23 +59,6 @@ const ProductUpdate = ({ handleSubmit, handleCancel, handleInput, formInputs }) 
                 </div>
             </div>
             <div className="">
-                <label>Quantity</label>
-                <div className="flex-1">
-                    <input
-                        defaultValue={formInputs.quantity}
-                        onChange={handleInput}
-                        autoComplete="off"
-                        name="quantity" 
-                        type="text"
-                        placeholder="Quantity"
-                        className={`${validationErrors.quantity && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
-                    />
-                    {validationErrors.quantity &&
-                        <p className="text-red-600 text-xs pt-1">{validationErrors.quantity}</p>
-                    }
-                </div>
-            </div>
-            <div className="">
                 <label>Unit</label>
                 <div className="flex-1">
                     <input
@@ -111,11 +94,11 @@ const ProductUpdate = ({ handleSubmit, handleCancel, handleInput, formInputs }) 
             </div>
             <div className="">
                 <label>&nbsp;</label>
-                <button type="button" onClick={handleCancel} className="rounded text-sm text-white bg-gray-400 px-4 py-1 hover:bg-gray-600">Cancel</button>
+                <button type="button" onClick={handleCancel} className="rounded text-sm text-gray-700 bg-white px-4 py-1 border border-gray-300">Cancel</button>
             </div>
             <div className="">
                 <label>&nbsp;</label>
-                <button type="submit" onClick={handleSubmit} className="rounded text-sm text-white bg-yellow-600 px-4 py-1 hover:bg-yellow-700">Update</button>
+                <button type="submit" onClick={handleSubmit} className="rounded text-sm text-white bg-gray-400 px-4 py-1 hover:bg-gray-500">Update</button>
             </div>
         </form>
     )

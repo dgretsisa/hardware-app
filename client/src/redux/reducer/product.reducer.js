@@ -24,7 +24,12 @@ const reducer = (state = initialState, { type, payload }) => {
                         return product._id === payload.product._id ? payload.product : product
                     })
                 ]
-            };
+            }
+        case Types.DELETE_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                products: state.products.filter(product => product._id !== payload.product._id)
+            }
         default:
             return state;
     }

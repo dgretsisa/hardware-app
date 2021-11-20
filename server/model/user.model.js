@@ -28,6 +28,8 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 });
 
+UserSchema.index({ name: 'text', username: 'text' });
+
 UserSchema.statics.validateUsername = function(username, id=null) {
     if(id === null) {
         return this.find({ username })

@@ -81,7 +81,7 @@ const Login = () => {
                     </div>
                 </div>
                 <div className="flex justify-end gap-5">
-                    <button className="rounded text-sm text-white bg-yellow-600 px-4 py-2 hover:bg-yellow-700">Sign in</button>
+                    <button className="rounded text-sm text-white bg-gray-500 px-4 py-2 hover:bg-gray-600">Sign in</button>
                 </div>
             </form>
         </div>

@@ -18,7 +18,7 @@ const ProductSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         min: 0,
-        required: true
+        default: 0
     },
     unit: {
         type: String,
@@ -32,6 +32,8 @@ const ProductSchema = new mongoose.Schema({
 },{
     timestamps: true
 });
+
+ProductSchema.index({ description: 'text', productCode: 'text', category: 'text' });
 
 ProductSchema.statics.validateDescription = function(description, id=null) {
     if(id === null) {
@@ -49,16 +51,22 @@ ProductSchema.statics.validateDescription = function(description, id=null) {
 
 ProductSchema.statics.validateProductCode = function(productCode, id=null) {
     if(id === null) {
-        return this.find({ productCode })
+        return this.find({ productCode : productCode.toUpperCase() })
         .then(products => {
             if(products.length > 0) return Promise.reject('Product code already exist!');
         });
     }
     else{
-        return this.find({ _id: { $ne: id }, productCode }).then(products => {
+        return this.find({ _id: { $ne: id }, productCode : productCode.toUpperCase() }).then(products => {
             if(products.length > 0) return Promise.reject('Product code already exist!');
         });
     }
+}
+
+ProductSchema.statics.validateProductId = function(id) {
+    return this.find({ _id: id })
+    .then(() => true)
+    .catch(() => Promise.reject('Product does not exist!'));
 }
 
 module.exports = mongoose.model('Product', ProductSchema);

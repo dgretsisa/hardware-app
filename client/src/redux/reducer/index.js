@@ -1,17 +1,17 @@
 import { combineReducers } from 'redux'
 
 import userReducer from '../reducer/user.reducer';
-import loaderReducer from '../reducer/loader.reducer';
-import modalReducer from '../reducer/modal.reducer';
 import notificationReducer from '../reducer/notification.reducer';
 import authReducer from '../reducer/auth.reducer';
 import productReducer from '../reducer/product.reducer';
+import stockincartReducer from '../reducer/stockincart.reducer';
+import paginationReducer from '../reducer/pagination.reducer';
 
 export default combineReducers({
     userReducer: userReducer,
-    loaderReducer: loaderReducer,
-    modalReducer: modalReducer,
     notificationReducer: notificationReducer,
     authReducer: authReducer,
-    productReducer: productReducer
+    productReducer: productReducer,
+    stockincartReducer: stockincartReducer,
+    paginationReducer: paginationReducer
 });

@@ -2,7 +2,7 @@ const ProductRepository = require('../repository/product.repository');
 const utility = require('../utility/utility.function');
 
 const fetch = async (req, res) => {
-    const data = await ProductRepository.fetch();
+    const data = await ProductRepository.fetch(req.query);
     return res.status(200).json(data);
 }
 

@@ -16,9 +16,6 @@ const create = [
         .isLength({ min: 2 }).withMessage('Product code should be atleast 2 characters!'),
     check('category')
         .notEmpty().withMessage('Category field is required!'),
-    check('quantity')
-        .notEmpty().withMessage('Quantity field is required!')
-        .custom(value => utility.numberValidator(value, 'Quantity')),
     check('unit')
         .notEmpty().withMessage('Unit field is required!'),
     check('price')
@@ -48,10 +45,6 @@ const update = [
     check('category')
         .optional()
         .notEmpty().withMessage('Category field is required!'),
-    check('quantity')
-        .optional()
-        .notEmpty().withMessage('Quantity field is required!')
-        .custom(value => utility.numberValidator(value, 'Quantity')),
     check('unit')
         .optional()
         .notEmpty().withMessage('Unit field is required!'),

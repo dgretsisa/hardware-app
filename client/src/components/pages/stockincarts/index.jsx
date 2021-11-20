@@ -6,59 +6,44 @@ import * as helper from '../../helper.function';
 import TableHeader from '../../common/table.header';
 import Table from '../../common/table';
 import Pagination from '../../common/pagination';
-import ProductAdd from './product.add';
-import ProductUpdate from './product.update';
-import ProductDelete from './product.delete';
+import StockincartAdd from './stockincart.add';
+import StockincartSearch from './stockincart.search';
+import StockincartUpdate from './stockincart.update';
+import StockincartDelete from './stockincart.delete';
 
-import { fetchProducts, addProduct, updateProduct, deleteProduct } from '../../../redux/action/product.action';
+import { fetchStockincarts, searchProducts, addStockincart, updateStockincart, deleteStockincart } from '../../../redux/action/stockincart.action';
 import { clearLogs, hideAlert } from '../../../redux/action/notification.action';
 
-const ProductIndex = () => {
+const StockincartIndex = () => {
     const dispatch = useDispatch();
 
-    const { products } = useSelector(state => state.productReducer);
+    const { stockincarts, resultProducts } = useSelector(state => state.stockincartReducer);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageLimit, setPageLimit] = useState(10);
-    const [sortBy, setSortBy] = useState('createdAt');
-    const [orderBy, setOrderBy] = useState('-1');
+    const [pageLimit, setPageLimit] = useState(1000000);
     const [formInputs, setFormInputs] = useState({});
     const [toggleAddForm, setToggleAddForm] = useState(false);
     const [toggleUpdateForm, setToggleUpdateForm] = useState(false);
     const [toggleDelete, setToggleDelete] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
     const [selectedRow, setSelectedRow] = useState({});
+    const [isSearching, setIsSearching] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState({});
     
     const tableheader = {
-        title: 'Products',
-        button: '+ Add New Product',
+        title: 'Stockin Entry',
+        button: '+ Add All to Stocks',
         placeholder: 'Search Product',
-        pageLimit: pageLimit,
-        sortBy: sortBy,
-        orderBy: orderBy,
-        sortByOptions: [
-            { label: 'Date', field: 'createdAt' },
-            { label: 'Description', field: 'description' },
-            { label: 'Code #', field: 'productCode' },
-            { label: 'Category', field: 'category' }
-        ],
-        setPageLimit: (e) => setPageLimit(e.target.value),
-        setSortBy: (e) => setSortBy(e.target.value),
-        setOrderBy: (e) => setOrderBy(e.target.value),
-        setToggleAddForm: () => { 
-            setToggleAddForm(true); 
-            setToggleUpdateForm(false);
-        },
         handleSearch: (e) => debounceHandleSearch(e),
     }
 
     const columns = [
-        { name: 'Code #', render: (row) => tdTemplate(row.productCode)},
-        { name: 'Description', render: (row) => tdTemplate(row.description)},
-        { name: 'Category', render: (row) => tdTemplate(row.category)},
+        { name: 'Stockin #', render: (row) => tdTemplate(row.stockinNumber)},
+        { name: 'Product', render: (row) => tdTemplate(row.product.description)},
         { name: 'Quantity', render: (row) => tdTemplate(row.quantity)},
         { name: 'Unit', render: (row) => tdTemplate(row.unit)},
-        { name: 'Price', render: (row) => tdTemplate(helper.formatNumber(row.price))},
+        { name: 'Unit Cost', render: (row) => tdTemplate(helper.formatNumber(row.unitCost))},
+        { name: 'Total Cost', render: (row) => tdTemplate(helper.formatNumber(row.totalCost))},
         { name: 'Date Added', render: (row) => tdTemplate(helper.formatDate(row.createdAt))},
         { name: '', render: (row) => tdActions(row)}
     ]
@@ -84,39 +69,50 @@ const ProductIndex = () => {
 
     /** Initialize Product */
     useEffect(() => {
-        dispatch(fetchProducts({ currentPage, pageLimit, sortBy, orderBy }))
+        dispatch(fetchStockincarts())
         .then(total => setTotalRecords(total)).catch(error => {});
-    }, [currentPage, pageLimit, sortBy, orderBy, dispatch])
+    }, [dispatch])
 
     const handleSearch = (e) => {
         e.preventDefault();
 
-        dispatch(fetchProducts({ currentPage, pageLimit, sortBy, orderBy, searchKeyword: e.target.value }))
-        .then(total => setTotalRecords(total)).catch(error => {});
+        if(e.target.value === '') setIsSearching(false);
+        else setIsSearching(true);
+
+        dispatch(searchProducts({ currentPage: 1, pageLimit: 10, sortBy: 'description', orderBy: 1, searchKeyword: e.target.value }));
+    }
+
+    const handleSelectProduct = (product) => {
+        setSelectedProduct(product);
+
+        setIsSearching(false);
+        setToggleAddForm(true);
+        setFormInputs({
+            product: product._id,
+            unit: product.unit
+        });
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if(toggleAddForm) {
-            dispatch(addProduct(formInputs)).then(() => {
+            dispatch(addStockincart(formInputs)).then(() => {
                 setFormInputs({});
                 setToggleAddForm(false);
             }).catch(() => {});
         }
 
         if(toggleUpdateForm) {
-            dispatch(updateProduct(selectedRow._id,formInputs)).then(() => {
+            dispatch(updateStockincart(selectedRow._id, formInputs)).then(() => {
                 setFormInputs({});
                 setToggleUpdateForm(false);
-                setSelectedRow({});
             }).catch(() => {});
         }
 
         if(toggleDelete) {
-            dispatch(deleteProduct(selectedRow._id)).then(() => {
+            dispatch(deleteStockincart(selectedRow._id)).then(() => {
                 setToggleDelete(false);
-                setSelectedRow({});
             }).catch(() => {});
         }
 
@@ -139,11 +135,12 @@ const ProductIndex = () => {
 
         setSelectedRow(row);
         setFormInputs({
-            description: row.description,
-            productCode: row.productCode,
-            category: row.category,
+            product: row.product._id,
+            stockinNumber: row.stockinNumber,
+            quantity: row.quantity,
             unit: row.unit,
-            price: row.price,
+            unitCost: row.unitCost,
+            totalCost: row.totalCost
         });
     }
 
@@ -188,20 +185,22 @@ const ProductIndex = () => {
         <div className="w-full px-10">
             <TableHeader 
                 tableheader={tableheader}
-                hasShow={true}
-                hasSort={true}
+                hasShow={false}
+                hasSort={false}
                 hasSearch={true}
-                hasButton={true}
+                hasButton={stockincarts.length > 0 ? true : false}
             />
             {toggleAddForm && 
-                <ProductAdd 
+                <StockincartAdd 
+                    selectedProduct={selectedProduct}
                     handleInput={handleInput}
                     handleSubmit={handleSubmit}
                     handleCancel={handleCancel}
                 />
             }
             {toggleUpdateForm && 
-                <ProductUpdate 
+                <StockincartUpdate 
+                    selectedRow={selectedRow}
                     formInputs={formInputs}
                     handleInput={handleInput}
                     handleSubmit={handleSubmit}
@@ -209,17 +208,23 @@ const ProductIndex = () => {
                 />
             }
             {toggleDelete && 
-                <ProductDelete 
+                <StockincartDelete 
                     selectedRow={selectedRow}
                     handleSubmit={handleSubmit}
                     handleCancel={handleCancel}
                 />
             }
+            {isSearching && 
+                <StockincartSearch 
+                    resultProducts={resultProducts}
+                    handleSelectProduct={handleSelectProduct}
+                />
+            }
             <Table 
                 columns={columns}
-                rows={products}
+                rows={stockincarts}
             />
-            {products.length > 0 &&
+            {stockincarts.length > 0 &&
                 <Pagination 
                     currentPage={currentPage}
                     pageLimit={pageLimit}
@@ -233,4 +238,4 @@ const ProductIndex = () => {
     )
 }
 
-export default ProductIndex
+export default StockincartIndex

@@ -12,12 +12,12 @@ import LayoutBreadcrumbs from './layout.breadcrumbs';
 import Dashboard from '../dashboard/dashboard';
 import ProductIndex from '../pages/products';
 import UserIndex from '../pages/users';
+import StockincartIndex from '../pages/stockincarts';
 
 /** Redux Actions */
-import { fetchUser } from '../../redux/action/user.action';
-import { fetchProducts } from '../../redux/action/product.action';
 import { addUserSocket, updateUserSocket, deleteUserSocket } from '../../redux/action/user.action';
-import { addProductSocket, updateProductSocket } from '../../redux/action/product.action';
+import { addProductSocket, updateProductSocket, deleteProductSocket } from '../../redux/action/product.action';
+import { addStockincartSocket, updateStockincartSocket, deleteStockincartSocket } from '../../redux/action/stockincart.action';
 
 /** Socket Context */
 import { SocketContext } from '../../context/websocket.context';
@@ -27,21 +27,20 @@ const Layout = () => {
     const dispatch = useDispatch();
     const { alertStatus, alertMessage, alertMessageTitle } = useSelector(state => state.notificationReducer)
 
-    /** Dispatch Data Fetchers */
-    useEffect(() => {
-        dispatch(fetchUser());
-        dispatch(fetchProducts());
-    }, [dispatch])
-
     /** Socket Listeners */
     useEffect(() => {
-        socket.on('DELETE_USER', user => dispatch(deleteUserSocket(user)));
-
         socket.on('ADD_PRODUCT', product => dispatch(addProductSocket(product)));
         socket.on('UPDATE_PRODUCT', product => dispatch(updateProductSocket(product)));
+        socket.on('DELETE_PRODUCT', product => dispatch(deleteProductSocket(product)));
+
         socket.on('ADD_USER', user => dispatch(addUserSocket(user)));
         socket.on('UPDATE_USER', user => dispatch(updateUserSocket(user)));
-    }, [socket])
+        socket.on('DELETE_USER', user => dispatch(deleteUserSocket(user)));
+
+        socket.on('ADD_STOCKIN_CART', stockincart => dispatch(addStockincartSocket(stockincart)));
+        socket.on('UPDATE_STOCKIN_CART', stockincart => dispatch(updateStockincartSocket(stockincart)));
+        socket.on('DELETE_STOCKIN_CART', stockincart => dispatch(deleteStockincartSocket(stockincart)));
+    }, [socket, dispatch])
 
     return (
         <div>
@@ -53,6 +52,7 @@ const Layout = () => {
                 <Route exact path="dashboard" element={<PrivateRoute element={<Dashboard />} />} />
                 <Route exact path="users" element={<PrivateRoute role="Administrator" element={<UserIndex/>} />} />
                 <Route exact path="products" element={<PrivateRoute role="Administrator" element={<ProductIndex/>} />} />
+                <Route exact path="stockin/entry" element={<PrivateRoute role="Administrator" element={<StockincartIndex/>} />} />
                 <Route path="*" element={<h3>Not Found</h3>}/>
             </Routes>
         </div>

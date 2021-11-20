@@ -1,0 +1,3 @@
+export const Types = {
+    INITIALIZE_PAGINATION: "INITIALIZE_PAGINATION"
+}

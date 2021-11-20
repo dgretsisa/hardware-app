@@ -34,11 +34,16 @@ const paginate = (array, currentPage, pageLimit) => {
     return array.slice((currentPage - 1) * pageLimit, currentPage * pageLimit);
 }
 
+const numberFormat = (number) => {
+    return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
 export {
     search,
     sortByDateRange,
     sortByAscending,
     sortByDescending,
     formatDate,
-    paginate
+    paginate,
+    numberFormat
 }

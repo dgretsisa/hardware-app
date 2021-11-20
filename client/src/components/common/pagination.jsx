@@ -2,7 +2,7 @@ import React from 'react'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 
-const pagination = ({ pageLimit, totalRecords, currentPage, handleSelectPage, handlePrevPage, handleNextPage }) => {
+const pagination = ({ currentPage, pageLimit, totalRecords, handleSelectPage, handlePrevPage, handleNextPage }) => {
 
     const totalPages = Math.ceil(totalRecords/pageLimit);
     const pages = [];
@@ -44,7 +44,7 @@ const pagination = ({ pageLimit, totalRecords, currentPage, handleSelectPage, ha
                                     onClick={() => handleSelectPage(page)} 
                                     key={index}
                                     aria-current="page" 
-                                    className={` ${currentPage == page ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'} cursor-pointer relative inline-flex items-center px-4 py-1.5 border text-sm font-medium`}>
+                                    className={` ${currentPage === page ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'} cursor-pointer relative inline-flex items-center px-4 py-1.5 border text-sm font-medium`}>
                                         {page}
                                     </div>
                         })

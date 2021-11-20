@@ -2,74 +2,67 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { PencilIcon, XIcon } from '@heroicons/react/solid';
-import * as utility from '../../functions/utility.function';
+import * as helper from '../../helper.function';
+import TableHeader from '../../common/table.header';
 import Table from '../../common/table';
+import Pagination from '../../common/pagination';
 import UserAdd from './user.add';
 import UserUpdate from './user.update';
-import Pagination from '../../common/pagination';
+import UserDelete from './user.delete';
 
-import { addUser, updateUser } from '../../../redux/action/user.action';
+import { fetchUsers, addUser, updateUser, deleteUser } from '../../../redux/action/user.action';
 import { clearLogs, hideAlert } from '../../../redux/action/notification.action';
 
 const UserIndex = () => {
     const dispatch = useDispatch();
-    
+
     const { users } = useSelector(state => state.userReducer);
-    const [filteredUsers, setfilteredUsers] = useState([]);
-    const [sortedUsers, setsortedUsers] = useState([]);
-    const [isSorted, setIsSorted] = useState(false);
+    const { authUser } = useSelector(state => state.authReducer);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [pageLimit, setPageLimit] = useState(10);
-    const [totalRecords, setTotalRecords] = useState(0);
-    const [sortFieldname, setSortFieldname] = useState('name');
-    const [sortOrder, setSortOrder] = useState('ascending');
-    const [searchBy, setSearchBy] = useState('name');
+    const [sortBy, setSortBy] = useState('createdAt');
+    const [orderBy, setOrderBy] = useState('-1');
+    const [formInputs, setFormInputs] = useState({});
     const [toggleAddForm, setToggleAddForm] = useState(false);
     const [toggleUpdateForm, setToggleUpdateForm] = useState(false);
-    const [formInputs, setFormInputs] = useState({});
-    const [passwordInput, setPasswordInput] = useState('');
-    const [selectedUpdateRowId, setSelectedUpdateRowId] = useState(null);
-
-    const table = {
+    const [toggleDelete, setToggleDelete] = useState(false);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [selectedRow, setSelectedRow] = useState({});
+    
+    const tableheader = {
         title: 'Users',
-        createButtonLabel: '+ Create User',
-        searchPlaceholder: 'Search user',
-        columns: [
-            { name: 'Name', render: (row) => tdTemplate(row.name)},
-            { name: 'Role', render: (row) => tdTemplate(row.role)},
-            { name: 'Username', render: (row) => tdTemplate(row.username)},
-            { name: 'Status', render: (row) => tdTemplate(row.isActive ? 'active' : 'inactive')},
-            { name: 'Created', render: (row) => tdTemplate(utility.formatDate(row.createdAt))},
-            { name: '', render: (row) => tdActions(row)}
+        button: '+ Add New User',
+        placeholder: 'Search User',
+        pageLimit: pageLimit,
+        sortBy: sortBy,
+        orderBy: orderBy,
+        sortByOptions: [
+            { label: 'Date', field: 'createdAt' },
+            { label: 'Name', field: 'name' },
+            { label: 'Username #', field: 'username' },
+            { label: 'Role', field: 'role' },
+            { label: 'Status', field: 'isActive' },
         ],
-        sortFields: [
-            { name: 'Name', field: 'name'},
-            { name: 'Username', field: 'username'},
-            { name: 'Created', field: 'createdAt'}
-        ],
-        sortOrders: [
-            { name: 'Ascending', order: 'ascending'},
-            { name: 'Descending', order: 'descending'}
-        ],
-        searchOptions: [
-            { name: 'Name', field: 'name'},
-            { name: 'Username', field: 'username'}
-        ],
-        addForm: () => (<UserAdd 
-            handleSubmit={handleSubmit} 
-            handleCancel={handleCancel} 
-            setToggleAddForm={setToggleAddForm}
-            handleInput={handleInput}
-        />),
-        updateForm: () => (<UserUpdate
-            handleSubmit={handleSubmit} 
-            handleCancel={handleCancel} 
-            setToggleUpdateForm={setToggleUpdateForm}
-            handleInput={handleInput}
-            formInputs={formInputs}
-            handleChangePassword={handleChangePassword}
-        />)
+        setPageLimit: (e) => setPageLimit(e.target.value),
+        setSortBy: (e) => setSortBy(e.target.value),
+        setOrderBy: (e) => setOrderBy(e.target.value),
+        setToggleAddForm: () => { 
+            setToggleAddForm(true); 
+            setToggleUpdateForm(false);
+        },
+        handleSearch: (e) => debounceHandleSearch(e),
     }
+
+    const columns = [
+        { name: 'Name', render: (row) => tdTemplate(row.name)},
+        { name: 'Username', render: (row) => tdTemplate(row.username)},
+        { name: 'Role', render: (row) => tdTemplate(row.role)},
+        { name: 'Status', render: (row) => tdTemplate(row.isActive ? 'Active': 'Inactive')},
+        { name: 'Date Added', render: (row) => tdTemplate(helper.formatDate(row.createdAt))},
+        { name: '', render: (row) => tdActions(row)}
+    ]
+
     const tdTemplate = (value) => {
         return (<div className="flex items-center">
            <div className="py-1.5 text-sm text-gray-900 whitespace-no-wrap">
@@ -81,24 +74,106 @@ const UserIndex = () => {
     const tdActions = (row) => {
         return ( <div className="flex gap-3 divide-x">
             <div className="pl-3">
-                <PencilIcon onClick={() => !toggleUpdateForm ? handleRowUpdate(row): {}} className="w-5 h-5 text-gray-600 cursor-pointer" />
+                <PencilIcon onClick={() => (!toggleUpdateForm && !toggleDelete) && handleUpdateRow(row)} className="w-5 h-5 text-gray-600 cursor-pointer" />
             </div>
-            <div className="pl-3">
-                <XIcon onClick={() => {}} className="w-5 h-5 text-red-400 cursor-pointer" />
-            </div>
+            {(authUser._id !== row._id) &&
+                <div className="pl-3">
+                    <XIcon onClick={() => (!toggleDelete && !toggleUpdateForm) && handleDeleteRow(row)} className="w-5 h-5 text-red-400 cursor-pointer" />
+                </div>
+            }
         </div>);
     }
 
+    /** Initialize Users */
     useEffect(() => {
-        if(isSorted) {
-            setfilteredUsers(utility.paginate(sortedUsers, currentPage, pageLimit));
-            setTotalRecords(sortedUsers.length)
+        dispatch(fetchUsers({ currentPage, pageLimit, sortBy, orderBy }))
+        .then(total => setTotalRecords(total)).catch(error => {});
+    }, [currentPage, pageLimit, sortBy, orderBy, dispatch])
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+
+        dispatch(fetchUsers({ currentPage, pageLimit, sortBy, orderBy, searchKeyword: e.target.value }))
+        .then(total => setTotalRecords(total)).catch(error => {});
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if(toggleAddForm) {
+            dispatch(addUser(formInputs)).then(() => {
+                setFormInputs({});
+                setToggleAddForm(false);
+            }).catch(() => {});
         }
-        else {
-            setfilteredUsers(utility.paginate(users, currentPage, pageLimit));
-            setTotalRecords(users.length)
+
+        if(toggleUpdateForm) {
+            dispatch(updateUser(selectedRow._id,formInputs)).then(() => {
+                setFormInputs({});
+                setToggleUpdateForm(false);
+                setSelectedRow({});
+            }).catch(() => {});
         }
-    }, [users, currentPage, pageLimit, isSorted, sortedUsers])
+
+        if(toggleDelete) {
+            dispatch(deleteUser(selectedRow._id)).then(() => {
+                setToggleDelete(false);
+                setSelectedRow({});
+            }).catch(() => {});
+        }
+
+        handleHideAlert();
+    }
+
+    const handleChangePassword = (e) => {
+        e.preventDefault();
+
+         dispatch(updateUser(selectedRow._id, { password: formInputs.password })).then(() => {
+            setFormInputs({});
+            setToggleUpdateForm(false);
+            setSelectedRow({});
+        }).catch(() => {});
+
+        handleHideAlert();
+    }
+
+    const handleCancel = (e) => {
+        e.preventDefault();
+        setToggleAddForm(false);
+        setToggleUpdateForm(false);
+        setToggleDelete(false);
+        setSelectedRow({});
+
+        dispatch(clearLogs());
+    }
+
+    const handleUpdateRow = (row) => {
+        setToggleUpdateForm(true);
+        setToggleAddForm(false);
+
+        setSelectedRow(row);
+        setFormInputs({
+            name: row.name,
+            username: row.username,
+            role: row.role,
+            isActive: row.isActive,
+        });
+    }
+
+    const handleDeleteRow = (row) => {
+        setToggleDelete(true);
+        setToggleUpdateForm(false);
+        setToggleAddForm(false);
+
+        setSelectedRow(row);
+    }
+
+    const handleHideAlert = () => {
+        /** This close the alert after 5 seconds */
+        setTimeout(() => {
+            dispatch(hideAlert())
+        }, 5000)
+    }
 
     const handleSelectPage = (page) => {
         setCurrentPage(page);
@@ -112,140 +187,63 @@ const UserIndex = () => {
         setCurrentPage(currentPage + 1);
     }
 
-    const handleSort = () => {
-        setIsSorted(true);
-        if(sortOrder === 'ascending') setsortedUsers(utility.sortByAscending(users, sortFieldname))
-        if(sortOrder === 'descending') setsortedUsers(utility.sortByDescending(users, sortFieldname))
-    }
-
-    const handleShow = (e) => {
-        setCurrentPage(1);
-
-        if(e.target.value === "-1") setPageLimit(totalRecords);
-        else setPageLimit(e.target.value);
-    }
-
-    const handleSearch = (e) => {
-        
-        if(isSorted) {
-            const result = utility.search(sortedUsers, searchBy, e.target.value);
-            setfilteredUsers(utility.paginate(result, currentPage, pageLimit));
-            setTotalRecords(result.length)
-        }
-        else {
-            const result = utility.search(users, searchBy, e.target.value);
-            setfilteredUsers(utility.paginate(result, currentPage, pageLimit));
-            setTotalRecords(result.length)
-        }
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsSorted(false);
-
-        if(toggleAddForm) {
-            dispatch(addUser(formInputs)).then(() => {
-                setToggleAddForm(false);
-                setFormInputs({});
-            }).catch(error => {})
-        }
-
-        if(toggleUpdateForm) {
-            dispatch(updateUser(selectedUpdateRowId, formInputs)).then(() => {
-                setToggleUpdateForm(false);
-                setSelectedUpdateRowId(null);
-                setFormInputs({});
-                setPasswordInput('');
-            }).catch(error => {})
-        }
-
-        handleHideAlert();
-    }
-
-    const handleChangePassword = (e) => {
-        e.preventDefault();
-        setIsSorted(false);
-
-        dispatch(updateUser(selectedUpdateRowId, { password : passwordInput })).then(() => {
-            setToggleUpdateForm(false);
-            setSelectedUpdateRowId(null);
-            setFormInputs({});
-            setPasswordInput('');
-        }).catch(error => {})
-    }
-
-    const handleCancel = (e) => {
-        e.preventDefault();
-        setToggleAddForm(false);
-        setToggleUpdateForm(false);
-        setSelectedUpdateRowId(null);
-        setFormInputs({});
-        setPasswordInput('');
-        dispatch(clearLogs());
-    }
-
-    const handleRowUpdate = (row) => {
-        setToggleAddForm(false);
-        setToggleUpdateForm(true);
-        setSelectedUpdateRowId(row._id);
-        setFormInputs({
-            name: row.name,
-            username: row.username,
-            role: row.role,
-            isActive: row.isActive
-        });
-    }
-
-    const handleHideAlert = () => {
-        /** This close the alert after 5 seconds */
-        setTimeout(() => {
-            dispatch(hideAlert())
-        }, 5000)
-    }
-
-    /** Input, Select */
-    const handleSelect = (e) => {
-        e.preventDefault();
-
-        if(e.target.name === 'sortFieldname') setSortFieldname(e.target.value)
-        if(e.target.name === 'sortOrder') setSortOrder(e.target.value)
-        if(e.target.name === 'searchBy') setSearchBy(e.target.value)
-    }
-
+    /** Handle Inputs Select */
     const handleInput = (e) => {
         e.preventDefault();
-        
-        setFormInputs(formInputs => ({...formInputs, [e.target.name]: e.target.value}))
 
-        if(e.target.name === 'password') setPasswordInput(e.target.value)
+        if(e.target.name === 'password') setFormInputs({...formInputs, password : e.target.value });
+        else setFormInputs(formInputs => ({...formInputs, [e.target.name]: e.target.value}));
     }
+
+    /** Debounce */
+    const debounceHandleSearch = helper.debounce(handleSearch, 800);
 
     return ( 
         <div className="w-full px-10">
+            <TableHeader 
+                tableheader={tableheader}
+                hasShow={true}
+                hasSort={true}
+                hasSearch={true}
+                hasButton={true}
+            />
+            {toggleAddForm && 
+                <UserAdd 
+                    handleInput={handleInput}
+                    handleSubmit={handleSubmit}
+                    handleCancel={handleCancel}
+                />
+            }
+            {toggleUpdateForm && 
+                <UserUpdate 
+                    formInputs={formInputs}
+                    handleInput={handleInput}
+                    handleSubmit={handleSubmit}
+                    handleCancel={handleCancel}
+                    handleChangePassword={handleChangePassword}
+                />
+            }
+            {toggleDelete && 
+                <UserDelete 
+                    selectedRow={selectedRow}
+                    handleSubmit={handleSubmit}
+                    handleCancel={handleCancel}
+                />
+            }
             <Table 
-                table={table} 
-                rows={filteredUsers}
-                pageLimit={pageLimit}
-                sortFieldname={sortFieldname}
-                sortOrder={sortOrder}
-                searchBy={searchBy}
-                handleSelect={handleSelect}
-                handleSort={handleSort}
-                handleSearch={handleSearch}
-                handleShow={handleShow}
-                setToggleAddForm={setToggleAddForm}
-                toggleAddForm={toggleAddForm}
-                setToggleUpdateForm={setToggleUpdateForm}
-                toggleUpdateForm={toggleUpdateForm}
+                columns={columns}
+                rows={users}
             />
-            <Pagination 
-                currentPage={currentPage}
-                pageLimit={pageLimit} 
-                totalRecords={totalRecords}
-                handleSelectPage={handleSelectPage}
-                handlePrevPage={handlePrevPage}
-                handleNextPage={handleNextPage}
-            />
+            {users.length > 0 &&
+                <Pagination 
+                    currentPage={currentPage}
+                    pageLimit={pageLimit}
+                    totalRecords={totalRecords}
+                    handleSelectPage={handleSelectPage}
+                    handlePrevPage={handlePrevPage}
+                    handleNextPage={handleNextPage}
+                />
+            }
         </div>
     )
 }

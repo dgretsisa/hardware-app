@@ -25,7 +25,8 @@ const LayoutBreadcrumbs = () => {
                         else {
                             return <li key={index} className="pl-3">{pathname}</li>
                         }
-                    }
+                    } 
+                    return null;
                 })}
             </ul>
         </div>

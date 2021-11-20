@@ -26,8 +26,13 @@ const numberValidator = (value, fieldname) => {
     }
 }
 
+const escapeRegex = (text) => {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
 module.exports = {
     capitalizeWord,
     broadcast,
-    numberValidator
+    numberValidator,
+    escapeRegex
 }

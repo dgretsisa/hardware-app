@@ -76,11 +76,11 @@ const UserUpdate = ({ handleSubmit, handleCancel, handleInput, formInputs, handl
                 </div>
                 <div className="mt-5">
                     <label>&nbsp;</label>
-                    <button type="button" onClick={handleCancel} className="rounded text-sm text-white bg-gray-400 px-4 py-1 hover:bg-gray-600">Cancel</button>
+                    <button type="button" onClick={handleCancel} className="rounded text-sm text-gray-700 bg-white px-4 py-1 border border-gray-300">Cancel</button>
                 </div>
                 <div className="mt-5">
                     <label>&nbsp;</label>
-                    <button type="submit" onClick={handleSubmit} className="rounded text-sm text-white bg-yellow-600 px-4 py-1 hover:bg-yellow-700">Update</button>
+                    <button type="submit" onClick={handleSubmit} className="rounded text-sm text-white bg-gray-400 px-4 py-1 hover:bg-gray-500">Update</button>
                 </div>
             </form>
             <form className="w-full flex justify-center items-center mt-3 pt-7 pb-3 gap-2 text-sm text-gray-600 border-t">
@@ -100,10 +100,12 @@ const UserUpdate = ({ handleSubmit, handleCancel, handleInput, formInputs, handl
                         }
                     </div>
                 </div>
-                <div className="">
-                    <label>&nbsp;</label>
-                    <button type="submit" onClick={handleChangePassword} className="rounded text-sm text-white bg-gray-400 px-4 py-1 hover:bg-gray-600">Change Password</button>
-                </div>
+                {formInputs.password &&
+                    <div className="">
+                        <label>&nbsp;</label>
+                        <button type="submit" onClick={handleChangePassword} className="rounded text-sm text-white bg-gray-400 px-4 py-1 hover:bg-gray-500">Change Password</button>
+                    </div>
+                }
             </form>
         </div>
     )
