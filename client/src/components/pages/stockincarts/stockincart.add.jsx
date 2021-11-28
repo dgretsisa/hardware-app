@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const StockincartAdd = ({ selectedProduct, handleSubmit, handleCancel, handleInput }) => {
+const StockincartAdd = ({ selectedProduct, handleSubmit, handleCancel, handleInput, formInputs }) => {
 
     const { validationErrors } = useSelector(state => state.notificationReducer)
 
@@ -17,12 +17,6 @@ const StockincartAdd = ({ selectedProduct, handleSubmit, handleCancel, handleInp
                         disabled
                         className={`${validationErrors.product && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
                     />
-                    <input 
-                        value={selectedProduct._id} 
-                        onChange={handleInput} 
-                        name="product" 
-                        type="hidden" 
-                    />
                     {validationErrors.product &&
                         <p className="text-red-600 text-xs pt-1">{validationErrors.product}</p>
                     }
@@ -32,6 +26,7 @@ const StockincartAdd = ({ selectedProduct, handleSubmit, handleCancel, handleInp
                 <label>Stockin #</label>
                 <div className="flex-1">
                     <input
+                        defaultValue={formInputs.stockinNumber}
                         onChange={handleInput}
                         autoComplete="off"
                         name="stockinNumber" 
@@ -48,6 +43,7 @@ const StockincartAdd = ({ selectedProduct, handleSubmit, handleCancel, handleInp
                 <label>Quantity &nbsp; <span className="text-xs">( by { selectedProduct.unit } )</span></label>
                 <div className="flex-1">
                     <input
+                        defaultValue={formInputs.quantity}
                         onChange={handleInput}
                         autoComplete="off"
                         name="quantity" 
@@ -81,6 +77,7 @@ const StockincartAdd = ({ selectedProduct, handleSubmit, handleCancel, handleInp
                 <label>Unit Cost</label>
                 <div className="flex-1">
                     <input
+                        defaultValue={formInputs.unitCost}
                         onChange={handleInput}
                         autoComplete="off"
                         name="unitCost" 
@@ -97,6 +94,7 @@ const StockincartAdd = ({ selectedProduct, handleSubmit, handleCancel, handleInp
                 <label>Total Cost</label>
                 <div className="flex-1">
                     <input
+                        value={Number.isNaN(formInputs.totalCost) ? '' : formInputs.totalCost}
                         onChange={handleInput}
                         autoComplete="off"
                         name="totalCost" 

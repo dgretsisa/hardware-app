@@ -26,6 +26,19 @@ const numberValidator = (value, fieldname) => {
     }
 }
 
+const numberValidatorDiscount = (value, fieldname) => {
+    try {
+        const quantity = eval(value);
+        if(quantity < 0) {
+            return Promise.reject(`${fieldname} must be atleast 0!`)
+        }
+
+        return true;
+    } catch (error) {
+        return Promise.reject(`${fieldname} must be a number!`);
+    }
+}
+
 const escapeRegex = (text) => {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
@@ -34,5 +47,6 @@ module.exports = {
     capitalizeWord,
     broadcast,
     numberValidator,
+    numberValidatorDiscount,
     escapeRegex
 }

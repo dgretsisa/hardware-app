@@ -36,6 +36,10 @@ const reducer = (state = initialState, { type, payload }) => {
                 ...state,
                 stockincarts: state.stockincarts.filter(stockin => stockin._id !== payload.stockin._id)
             }
+        case Types.DELETE_BULK_STOCKINCART_SUCCESS:
+            return {
+                stockincarts: []
+            }
         default:
             return state;
     }

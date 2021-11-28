@@ -13,11 +13,15 @@ import Dashboard from '../dashboard/dashboard';
 import ProductIndex from '../pages/products';
 import UserIndex from '../pages/users';
 import StockincartIndex from '../pages/stockincarts';
+import StockinIndex from '../pages/stockins';
+import PosIndex from '../pages/pos';
 
 /** Redux Actions */
 import { addUserSocket, updateUserSocket, deleteUserSocket } from '../../redux/action/user.action';
 import { addProductSocket, updateProductSocket, deleteProductSocket } from '../../redux/action/product.action';
-import { addStockincartSocket, updateStockincartSocket, deleteStockincartSocket } from '../../redux/action/stockincart.action';
+import { addStockincartSocket, updateStockincartSocket, deleteStockincartSocket, deleteBulkStockincartSocket } from '../../redux/action/stockincart.action';
+import { addStockinSocket } from '../../redux/action/stockin.action';
+import  { addPurchaseSocket, updatePurchaseSocket, deletePurchaseSocket } from '../../redux/action/pos.action';
 
 /** Socket Context */
 import { SocketContext } from '../../context/websocket.context';
@@ -40,6 +44,15 @@ const Layout = () => {
         socket.on('ADD_STOCKIN_CART', stockincart => dispatch(addStockincartSocket(stockincart)));
         socket.on('UPDATE_STOCKIN_CART', stockincart => dispatch(updateStockincartSocket(stockincart)));
         socket.on('DELETE_STOCKIN_CART', stockincart => dispatch(deleteStockincartSocket(stockincart)));
+
+        socket.on('ADD_STOCKIN', stockins => {
+            dispatch(addStockinSocket(stockins))
+            dispatch(deleteBulkStockincartSocket())
+        });
+
+        socket.on('ADD_POS', purchase => dispatch(addPurchaseSocket(purchase)));
+        socket.on('UPDATE_POS', purchase => dispatch(updatePurchaseSocket(purchase)));
+        socket.on('DELETE_POS', purchase => dispatch(deletePurchaseSocket(purchase)));
     }, [socket, dispatch])
 
     return (
@@ -52,7 +65,9 @@ const Layout = () => {
                 <Route exact path="dashboard" element={<PrivateRoute element={<Dashboard />} />} />
                 <Route exact path="users" element={<PrivateRoute role="Administrator" element={<UserIndex/>} />} />
                 <Route exact path="products" element={<PrivateRoute role="Administrator" element={<ProductIndex/>} />} />
+                <Route exact path="stockin" element={<PrivateRoute role="Administrator" element={<StockinIndex/>} />} />
                 <Route exact path="stockin/entry" element={<PrivateRoute role="Administrator" element={<StockincartIndex/>} />} />
+                <Route exact path="pos" element={<PrivateRoute role="User" element={<PosIndex/>} />} />
                 <Route path="*" element={<h3>Not Found</h3>}/>
             </Routes>
         </div>

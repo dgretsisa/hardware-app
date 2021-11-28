@@ -85,14 +85,14 @@ const ProductIndex = () => {
     /** Initialize Product */
     useEffect(() => {
         dispatch(fetchProducts({ currentPage, pageLimit, sortBy, orderBy }))
-        .then(total => setTotalRecords(total)).catch(error => {});
+        .then(total => setTotalRecords(total)).catch(error => handleHideAlert());
     }, [currentPage, pageLimit, sortBy, orderBy, dispatch])
 
     const handleSearch = (e) => {
         e.preventDefault();
 
         dispatch(fetchProducts({ currentPage, pageLimit, sortBy, orderBy, searchKeyword: e.target.value }))
-        .then(total => setTotalRecords(total)).catch(error => {});
+        .then(total => setTotalRecords(total)).catch(error => handleHideAlert());
     }
 
     const handleSubmit = (e) => {

@@ -5,7 +5,8 @@ import notificationReducer from '../reducer/notification.reducer';
 import authReducer from '../reducer/auth.reducer';
 import productReducer from '../reducer/product.reducer';
 import stockincartReducer from '../reducer/stockincart.reducer';
-import paginationReducer from '../reducer/pagination.reducer';
+import stockinReducer from '../reducer/stockin.reducer';
+import posReducer from '../reducer/pos.reducer';
 
 export default combineReducers({
     userReducer: userReducer,
@@ -13,5 +14,6 @@ export default combineReducers({
     authReducer: authReducer,
     productReducer: productReducer,
     stockincartReducer: stockincartReducer,
-    paginationReducer: paginationReducer
+    stockinReducer: stockinReducer,
+    posReducer: posReducer
 });

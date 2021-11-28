@@ -33,8 +33,6 @@ const ProductSchema = new mongoose.Schema({
     timestamps: true
 });
 
-ProductSchema.index({ description: 'text', productCode: 'text', category: 'text' });
-
 ProductSchema.statics.validateDescription = function(description, id=null) {
     if(id === null) {
         return this.find({ description })
@@ -69,4 +67,6 @@ ProductSchema.statics.validateProductId = function(id) {
     .catch(() => Promise.reject('Product does not exist!'));
 }
 
-module.exports = mongoose.model('Product', ProductSchema);
+const Product = mongoose.model('Product', ProductSchema);
+
+module.exports = { Product, ProductSchema };

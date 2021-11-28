@@ -5,22 +5,18 @@ import { PencilIcon, XIcon } from '@heroicons/react/solid';
 import * as helper from '../../helper.function';
 import TableHeader from '../../common/table.header';
 import Table from '../../common/table';
-import Pagination from '../../common/pagination';
-import StockincartAdd from './stockincart.add';
-import StockincartSearch from './stockincart.search';
-import StockincartUpdate from './stockincart.update';
-import StockincartDelete from './stockincart.delete';
-import StockincartEntries from './stockincart.entries';
-import StockincartNote from './stockincart.note';
+import PosSearch from './pos.search';
+import PosAdd from './pos.add';
+import PosUpdate from './pos.update';
+import PosDelete from './pos.delete';
 
-import { fetchStockincarts, searchProducts, addStockincart, updateStockincart, deleteStockincart } from '../../../redux/action/stockincart.action';
-import { addStockin } from '../../../redux/action/stockin.action';
+import { fetchPurchases, searchProducts, addPurchase, updatePurchase, deletePurchase } from '../../../redux/action/pos.action';
 import { clearLogs, hideAlert } from '../../../redux/action/notification.action';
 
-const StockincartIndex = () => {
+const PosIndex = () => {
     const dispatch = useDispatch();
 
-    const { stockincarts, resultProducts } = useSelector(state => state.stockincartReducer);
+    const { purchases, resultProducts } = useSelector(state => state.posReducer);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageLimit, setPageLimit] = useState(1000000);
@@ -33,36 +29,34 @@ const StockincartIndex = () => {
     const [selectedRow, setSelectedRow] = useState({});
     const [isSearching, setIsSearching] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState({});
-    
+
     const tableheader = {
-        title: 'Stock Entry',
-        button: 'Transfer Stocks to Inventory',
+        title: 'Point of Sale',
         placeholder: 'Search Product',
         customButtonMethod: () => handleEntries(),
         handleSearch: (e) => debounceHandleSearch(e),
     }
 
     const columns = [
-        { name: 'Stock #', render: (row) => tdTemplate(row.stockinNumber)},
-        { name: 'Product', render: (row) => tdTemplate(row.product.description)},
-        { name: 'Quantity', render: (row) => tdTemplate(row.quantity)},
-        { name: 'Unit', render: (row) => tdTemplate(row.unit)},
-        { name: 'Unit Cost', render: (row) => tdTemplate(helper.formatNumber(row.unitCost))},
-        { name: 'Total Cost', render: (row) => tdTemplate(helper.formatNumber(row.totalCost))},
-        { name: 'Date Added', render: (row) => tdTemplate(helper.formatDate(row.createdAt))},
-        { name: '', render: (row) => tdActions(row)}
+        { name: 'Product', render: (row) => tdTemplate(row.product.description) },
+        { name: 'Price', render: (row) => tdTemplate(helper.formatNumber(row.price)) },
+        { name: 'Quantity', render: (row) => tdTemplate(row.quantity) },
+        { name: 'Unit', render: (row) => tdTemplate(row.unit) },
+        { name: 'Discount', render: (row) => tdTemplate(helper.formatNumber((row.discount ? row.discount : 0))) },
+        { name: 'Total', render: (row) => tdTemplate(helper.formatNumber(row.total)) },
+        { name: '', render: (row) => tdActions(row) }
     ]
 
     const tdTemplate = (value) => {
         return (<div className="flex items-center">
-           <div className="py-1.5 text-sm text-gray-900 whitespace-no-wrap">
-                { value }
+            <div className="py-1.5 text-sm text-gray-900 whitespace-no-wrap">
+                {value}
             </div>
         </div>)
     }
 
     const tdActions = (row) => {
-        return ( <div className="flex gap-3 divide-x">
+        return (<div className="flex gap-3 divide-x">
             <div className="pl-3">
                 <PencilIcon onClick={() => (!toggleUpdateForm && !toggleDelete) && handleUpdateRow(row)} className="w-5 h-5 text-gray-600 cursor-pointer" />
             </div>
@@ -74,8 +68,8 @@ const StockincartIndex = () => {
 
     /** Initialize Product */
     useEffect(() => {
-        dispatch(fetchStockincarts())
-        .then(total => setTotalRecords(total)).catch(error => handleHideAlert());
+        dispatch(fetchPurchases())
+            .then(() => { }).catch(error => handleHideAlert());
     }, [dispatch])
 
     const handleSearch = (e) => {
@@ -85,8 +79,8 @@ const StockincartIndex = () => {
         setToggleUpdateForm(false);
         setToggleDelete(false);
         setToggleAddAllEntries(false);
-        
-        if(e.target.value === '') setIsSearching(false);
+
+        if (e.target.value === '') setIsSearching(false);
         else setIsSearching(true);
 
         dispatch(searchProducts({ currentPage: 1, pageLimit: 10, sortBy: 'description', orderBy: 1, searchKeyword: e.target.value }));
@@ -99,34 +93,36 @@ const StockincartIndex = () => {
         setToggleAddForm(true);
         setFormInputs({
             product: product,
-            unit: product.unit
+            price: product.price,
+            unit: product.unit,
+            discount: 0
         });
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if(toggleAddForm) {
-            dispatch(addStockincart(formInputs)).then(() => {
+        if (toggleAddForm) {
+            dispatch(addPurchase(formInputs)).then(() => {
                 setFormInputs({});
                 setToggleAddForm(false);
-            }).catch(() => {});
+            }).catch(() => { });
         }
 
-        if(toggleUpdateForm) {
-            dispatch(updateStockincart(selectedRow._id, formInputs)).then(() => {
+        if (toggleUpdateForm) {
+            dispatch(updatePurchase(selectedRow._id, formInputs)).then(() => {
                 setFormInputs({});
                 setToggleUpdateForm(false);
             }).catch(() => {});
         }
 
-        if(toggleDelete) {
-            dispatch(deleteStockincart(selectedRow._id)).then(() => {
+        if (toggleDelete) {
+            dispatch(deletePurchase(selectedRow._id)).then(() => {
                 setToggleDelete(false);
             }).catch(() => {});
         }
 
-        if(toggleAddAllEntries) {
+        /**if(toggleAddAllEntries) {
             const stocks = stockincarts.map(stock => {
                 return {
                     stockinNumber: stock.stockinNumber,
@@ -136,12 +132,12 @@ const StockincartIndex = () => {
                     unitCost: stock.unitCost,
                     totalCost: stock.totalCost,
                 }
-            })
+            }) 
 
             dispatch(addStockin(stocks)).then(() => {
                 setToggleAddAllEntries(false);
             }).catch(() => {});
-        }
+        } **/
 
         handleHideAlert();
     }
@@ -167,11 +163,11 @@ const StockincartIndex = () => {
         setSelectedRow(row);
         setFormInputs({
             product: row.product,
-            stockinNumber: row.stockinNumber,
+            price: row.price,
             quantity: row.quantity,
             unit: row.unit,
-            unitCost: row.unitCost,
-            totalCost: row.totalCost
+            discount: row.discount ? row.discount: 0,
+            total: row.total
         });
     }
 
@@ -204,78 +200,69 @@ const StockincartIndex = () => {
     const handleInput = (e) => {
         e.preventDefault();
 
-        setFormInputs(formInputs => ({...formInputs, [e.target.name]: e.target.value}));
+        setFormInputs(formInputs => ({ ...formInputs, [e.target.name]: e.target.value }));
 
-        if(e.target.name === 'quantity') setFormInputs(formInputs => ({...formInputs, totalCost: (parseFloat(formInputs.unitCost) * parseFloat(e.target.value)) }))
-        if(e.target.name === 'unitCost') setFormInputs(formInputs => ({...formInputs, totalCost: (parseFloat(formInputs.quantity) * parseFloat(e.target.value)) }))
+        if (e.target.name === 'quantity') setFormInputs(formInputs => ({ ...formInputs, total: ((parseFloat(formInputs.price) * parseFloat(e.target.value)) - parseFloat(formInputs.discount !== '' ? formInputs.discount : 0)) }))
+        if (e.target.name === 'discount') setFormInputs(formInputs => ({ ...formInputs, total: ((parseFloat(formInputs.price) * parseFloat(formInputs.quantity)) - parseFloat(e.target.value !== '' ? e.target.value : 0)),
+            discount: e.target.value !== '' ? e.target.value : 0
+        }))
     }
 
     /** Debounce */
     const debounceHandleSearch = helper.debounce(handleSearch, 800);
 
-    return ( 
+    return (
         <div className="w-full px-10">
-            <TableHeader 
+            <TableHeader
                 tableheader={tableheader}
                 hasShow={false}
                 hasSort={false}
                 hasSearch={true}
-                hasButton={stockincarts.length > 0 ? true : false}
-                customButton={true}
+                hasButton={false}
+                customButton={false}
             />
-            <StockincartNote />
-            {toggleAddForm && 
-                <StockincartAdd 
-                    selectedProduct={selectedProduct}
-                    handleInput={handleInput}
-                    handleSubmit={handleSubmit}
-                    handleCancel={handleCancel}
-                    formInputs={formInputs}
-                />
-            }
-            {toggleUpdateForm && 
-                <StockincartUpdate 
-                    selectedRow={selectedRow}
-                    formInputs={formInputs}
-                    handleInput={handleInput}
-                    handleSubmit={handleSubmit}
-                    handleCancel={handleCancel}
-                />
-            }
-            {toggleDelete && 
-                <StockincartDelete 
-                    selectedRow={selectedRow}
-                    handleSubmit={handleSubmit}
-                    handleCancel={handleCancel}
-                />
-            }
-            {toggleAddAllEntries &&
-                <StockincartEntries
-                    handleSubmit={handleSubmit}
-                    handleCancel={handleCancel}
-                />
-            }
-            {isSearching && 
-                <StockincartSearch 
+
+            {isSearching &&
+                <PosSearch
                     resultProducts={resultProducts}
                     handleSelectProduct={handleSelectProduct}
                 />
             }
-            {!isSearching &&
-                <Table 
-                    columns={columns}
-                    rows={stockincarts}
+
+            {toggleAddForm &&
+                <PosAdd
+                    selectedProduct={selectedProduct}
+                    handleSubmit={handleSubmit}
+                    handleCancel={handleCancel}
+                    handleInput={handleInput}
+                    formInputs={formInputs}
                 />
             }
-            {stockincarts.length > 0 &&
-                <Pagination 
-                    currentPage={currentPage}
-                    pageLimit={pageLimit}
-                    totalRecords={totalRecords}
+
+            {toggleUpdateForm &&
+                <PosUpdate
+                    selectedRow={selectedRow}
+                    handleSubmit={handleSubmit}
+                    handleCancel={handleCancel}
+                    handleInput={handleInput}
+                    formInputs={formInputs}
                 />
             }
+
+            {toggleDelete &&
+                <PosDelete 
+                    selectedRow={selectedRow}
+                    handleSubmit={handleSubmit}
+                    handleCancel={handleCancel}
+                />
+            }
+
+            <Table
+                columns={columns}
+                rows={purchases}
+            />
         </div>
     )
 }
 
-export default StockincartIndex
+export default PosIndex

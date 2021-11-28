@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 
 const ProductSchema = require('./product.model').ProductSchema;
 
-const StockinSchema = mongoose.Schema({
-    stockinNumber: {
-        type: String,
-        required: true
-    },
+const PosSchema = new mongoose.Schema({
     product: ProductSchema,
     quantity: {
         type: Number,
@@ -14,18 +10,20 @@ const StockinSchema = mongoose.Schema({
     },
     unit: {
         type: String,
-        required: true,
+        required: true
     },
-    unitCost: {
+    price: {
         type: Number,
         required: true
     },
-    totalCost: {
+    discount: {
+        type: Number,
+        default: 0
+    },
+    total: {
         type: Number,
         required: true
     }
-},  {
-    timestamps: true
 })
 
-module.exports = mongoose.model('Stockin', StockinSchema);
+module.exports = mongoose.model('Pos', PosSchema);

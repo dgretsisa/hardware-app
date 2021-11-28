@@ -3,7 +3,7 @@ const StockinCart = require('../model/stockin.cart.model');
 const fetch = async () => {
     const response = {};
 
-    const data =  await StockinCart.find({}).populate('product');
+    const data =  await StockinCart.find({});
     response.data = data;
     response.totalRecords = data.length;
 
@@ -14,17 +14,15 @@ const create = async (resource) => {
     /** Uppercase */
     resource.stockinNumber ? resource.stockinNumber = resource.stockinNumber.toUpperCase(): null;
 
-    const response =  await StockinCart.create(resource);
-
-    return await response.populate('product');
+    return await StockinCart.create(resource);
 }
 
 const fetchById = async (id) => {
-    return await StockinCart.findById(id).populate('product');
+    return await StockinCart.findById(id);
 }
 
 const updateById = async (id, resource) => {
-    return await StockinCart.findByIdAndUpdate(id, resource, { new: true }).populate('product');
+    return await StockinCart.findByIdAndUpdate(id, resource, { new: true });
 }
 
 const deleteById = async (id) => {

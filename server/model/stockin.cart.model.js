@@ -1,15 +1,13 @@
 const mongoose = require('mongoose');
 
+const ProductSchema = require('./product.model').ProductSchema;
+
 const StockincartSchema = mongoose.Schema({
     stockinNumber: {
         type: String,
         required: true
     },
-    product: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Product',
-        required: true
-    },
+    product: ProductSchema,
     quantity: {
         type: Number,
         required: true

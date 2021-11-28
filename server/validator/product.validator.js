@@ -2,7 +2,7 @@ const { check, validationResult } = require('express-validator');
 
 const { ValidationError } = require('../utility/error.class');
 const format = require('./validation.format');
-const Product = require('../model/product.model');
+const Product = require('../model/product.model').Product;
 const utility = require('../utility/utility.function');
 
 const create = [

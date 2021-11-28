@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const StockincartUpdate = ({ selectedRow, handleSubmit, handleCancel, handleInput, formInputs }) => {
+const PosUpdate = ({ selectedRow, handleSubmit, handleCancel, handleInput, formInputs }) => {
 
     const { validationErrors } = useSelector(state => state.notificationReducer)
 
@@ -23,30 +23,31 @@ const StockincartUpdate = ({ selectedRow, handleSubmit, handleCancel, handleInpu
                 </div>
             </div>
             <div className="flex flex-col">
-                <label>Stockin #</label>
+                <label>Price </label>
                 <div className="flex-1">
                     <input
-                        defaultValue={selectedRow.stockinNumber}
+                        defaultValue={selectedRow.price}
                         onChange={handleInput}
                         autoComplete="off"
-                        name="stockinNumber" 
+                        name="price"
                         type="text"
-                        placeholder="Stockin #"
-                        className={`${validationErrors.stockinNumber && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
+                        placeholder="Price"
+                        disabled
+                        className={`${validationErrors.price && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
                     />
-                    {validationErrors.stockinNumber &&
-                        <p className="text-red-600 text-xs pt-1">{validationErrors.stockinNumber}</p>
+                    {validationErrors.price &&
+                        <p className="text-red-600 text-xs pt-1">{validationErrors.price}</p>
                     }
                 </div>
             </div>
             <div className="flex flex-col">
-                <label>Quantity &nbsp; <span className="text-xs">( by { selectedRow.unit } )</span></label>
+                <label>Quantity &nbsp; <span className="text-xs">( by {selectedRow.unit} )</span></label>
                 <div className="flex-1">
                     <input
-                        defaultValue={selectedRow.quantity}
+                        defaultValue={formInputs.quantity}
                         onChange={handleInput}
                         autoComplete="off"
-                        name="quantity" 
+                        name="quantity"
                         type="text"
                         placeholder="Quantity"
                         className={`${validationErrors.quantity && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
@@ -63,7 +64,7 @@ const StockincartUpdate = ({ selectedRow, handleSubmit, handleCancel, handleInpu
                         value={selectedRow.unit}
                         onChange={handleInput}
                         autoComplete="off"
-                        name="unit" 
+                        name="unit"
                         type="hidden"
                         placeholder="Unit"
                         className={`${validationErrors.unit && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
@@ -74,36 +75,36 @@ const StockincartUpdate = ({ selectedRow, handleSubmit, handleCancel, handleInpu
                 </div>
             </div>
             <div className="flex flex-col">
-                <label>Unit Cost</label>
+                <label>Discount</label>
                 <div className="flex-1">
                     <input
-                        defaultValue={selectedRow.unitCost}
+                        defaultValue={formInputs.discount}
                         onChange={handleInput}
                         autoComplete="off"
-                        name="unitCost" 
+                        name="discount"
                         type="text"
-                        placeholder="Unit Cost"
-                        className={`${validationErrors.unitCost && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
+                        placeholder="Discount"
+                        className={`${validationErrors.discount && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
                     />
-                    {validationErrors.unitCost &&
-                        <p className="text-red-600 text-xs pt-1">{validationErrors.unitCost}</p>
+                    {validationErrors.discount &&
+                        <p className="text-red-600 text-xs pt-1">{validationErrors.discount}</p>
                     }
                 </div>
             </div>
             <div className="flex flex-col">
-                <label>Total Cost</label>
+                <label>Total</label>
                 <div className="flex-1">
                     <input
-                        value={Number.isNaN(formInputs.totalCost) ? '' : formInputs.totalCost}
+                        value={Number.isNaN(formInputs.total) ? '' : formInputs.total}
                         onChange={handleInput}
                         autoComplete="off"
-                        name="totalCost" 
+                        name="total"
                         type="text"
-                        placeholder="Total Cost"
-                        className={`${validationErrors.totalCost && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
+                        placeholder="Total"
+                        className={`${validationErrors.total && 'border-red-600'} w-full rounded border-transparent border border-gray-300 py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-sm focus:outline-none`}
                     />
-                    {validationErrors.totalCost &&
-                        <p className="text-red-600 text-xs pt-1">{validationErrors.totalCost}</p>
+                    {validationErrors.total &&
+                        <p className="text-red-600 text-xs pt-1">{validationErrors.total}</p>
                     }
                 </div>
             </div>
@@ -119,4 +120,4 @@ const StockincartUpdate = ({ selectedRow, handleSubmit, handleCancel, handleInpu
     )
 }
 
-export default StockincartUpdate
+export default PosUpdate

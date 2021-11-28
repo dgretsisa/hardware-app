@@ -1,13 +1,13 @@
-import StockincartAPI from "../../axios/services/stockincart.service";
+import PosAPI from "../../axios/services/pos.service";
 import ProductAPI from "../../axios/services/product.service";
-import { Types } from "../types/stockincart.types";
+import { Types } from "../types/pos.types";
 import * as notification from './notification.action';
 import * as helper from '../helper.functions';
 
-const initializeStockincarts = (stockins) => {
+const initializePurchases = (purchases) => {
     return {
-        type: Types.INITIALIZE_STOCKINCART,
-        payload: { stockins }
+        type: Types.INITIALIZE_PURCHASES,
+        payload: { purchases }
     }
 }
 
@@ -18,42 +18,36 @@ const searchProductSuccess = (resultProducts) => {
     }
 }
 
-const addStockincartSuccess = (stockin) => {
+const addPurchaseSuccess = (purchase) => {
     return {
-        type: Types.ADD_STOCKINCART_SUCCESS,
-        payload: { stockin }
+        type: Types.ADD_PURCHASE_SUCCESS,
+        payload: { purchase }
     }
 }
 
-const updateStockincartSuccess = (stockin) => {
+const updatePurchaseSuccess = (purchase) => {
     return {
-        type: Types.UPDATE_STOCKINCART_SUCCESS,
-        payload: { stockin }
+        type: Types.UPDATE_PURCHASE_SUCCESS,
+        payload: { purchase }
     }
 }
 
-const deleteStockincartSuccess = (stockin) => {
+const deletePurchaseSuccess = (purchase) => {
     return {
-        type: Types.DELETE_STOCKINCART_SUCCESS,
-        payload: { stockin }
-    }
-}
-
-const deleteBulkStockincartSuccess = () => {
-    return {
-        type: Types.DELETE_BULK_STOCKINCART_SUCCESS
+        type: Types.DELETE_PURCHASE_SUCCESS,
+        payload: { purchase }
     }
 }
 
 /** Dispatcher */
 
-export const fetchStockincarts = () => (dispatch) => {
+export const fetchPurchases = () => (dispatch) => {
 
     return new Promise((resolve, reject) => {
-        StockincartAPI.fetch()
+        PosAPI.fetch()
         .then(({data}) => {
-            dispatch(initializeStockincarts(data.data));
-            resolve(data.totalRecords);
+            dispatch(initializePurchases(data));
+            resolve();
         })
         .catch(error => {
             const generalErrors = { status: error.response.status, message: error.response.statusText, title: 'Error' };
@@ -76,11 +70,11 @@ export const searchProducts = (resource) => (dispatch) => {
         });
 }
 
-export const addStockincart = (resource) => (dispatch) => {
+export const addPurchase = (resource) => (dispatch) => {
     return new Promise((resolve, reject) => { 
-        StockincartAPI.create(resource)
+        PosAPI.create(resource)
             .then(({data}) => {
-                dispatch(notification.assignSuccessMessage('Added', 'Stock was added successfully'))
+                dispatch(notification.assignSuccessMessage('Added', 'Item was added successfully'))
                 resolve();
             })
             .catch((error) => {
@@ -93,11 +87,11 @@ export const addStockincart = (resource) => (dispatch) => {
     })
 }
 
-export const updateStockincart = (id, resource) => (dispatch) => {
+export const updatePurchase = (id, resource) => (dispatch) => {
     return new Promise((resolve, reject) => { 
-        StockincartAPI.update(id, resource)
+        PosAPI.update(id, resource)
             .then(({data}) => {
-                dispatch(notification.assignSuccessMessage('Updated', 'Stock was updated successfully'))
+                dispatch(notification.assignSuccessMessage('Updated', 'Item was updated successfully'))
                 resolve();
             })
             .catch((error) => {
@@ -110,11 +104,11 @@ export const updateStockincart = (id, resource) => (dispatch) => {
     })
 }
 
-export const deleteStockincart = (id) => (dispatch) => {
+export const deletePurchase = (id, resource) => (dispatch) => {
     return new Promise((resolve, reject) => { 
-        StockincartAPI.delete(id)
+        PosAPI.delete(id)
             .then(({data}) => {
-                dispatch(notification.assignSuccessMessage('Deleted', 'Stock was deleted successfully'))
+                dispatch(notification.assignSuccessMessage('Delete', 'Item was deleted successfully'))
                 resolve();
             })
             .catch((error) => {
@@ -127,18 +121,15 @@ export const deleteStockincart = (id) => (dispatch) => {
     })
 }
 
-export const addStockincartSocket = (stockin) => (dispatch) => {
-    dispatch(addStockincartSuccess(stockin));
+export const addPurchaseSocket = (purchase) => (dispatch) => {
+    dispatch(addPurchaseSuccess(purchase));
 }
 
-export const updateStockincartSocket = (stockin) => (dispatch) => {
-    dispatch(updateStockincartSuccess(stockin));
+export const updatePurchaseSocket = (purchase) => (dispatch) => {
+    dispatch(updatePurchaseSuccess(purchase));
 }
 
-export const deleteStockincartSocket = (stockin) => (dispatch) => {
-    dispatch(deleteStockincartSuccess(stockin));
+export const deletePurchaseSocket = (purchase) => (dispatch) => {
+    dispatch(deletePurchaseSuccess(purchase));
 }
 
-export const deleteBulkStockincartSocket = (stockins) => (dispatch) => {
-    dispatch(deleteBulkStockincartSuccess(stockins));
-}

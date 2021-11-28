@@ -5,21 +5,22 @@ const utility = require('../utility/utility.function');
 
 const fetch = async (params) => {
     const { limit, skip, sortBy, orderBy, searchKeyword } = params;
-    const sort = {};
-
-    if(sortBy && orderBy) {
-        sort[sortBy] = orderBy;
+    
+    if(!sortBy && !orderBy) {
+        sortBy = 'createdAt';
+        orderBy = -1;
     }
 
     const response = {};
     response.totalRecords = await User.countDocuments({});
 
     if(searchKeyword) {
-        const data =  await User.find({ $text : { $search: searchKeyword }}).skip(parseInt(skip)).limit(parseInt(limit)).sort(sort);
+        const searchRegex = new RegExp(utility.escapeRegex(searchKeyword), 'gi');
+        const data =  await User.find({ $or: [{name: searchRegex}, {username: searchRegex}, {role: searchRegex}]}).skip(parseInt(skip)).limit(parseInt(limit)).sort([[ sortBy, orderBy ]]);
         response.data = data;
         response.totalRecords = data.length; 
     }
-    else response.data = await User.find({}).skip(parseInt(skip)).limit(parseInt(limit)).sort(sort);
+    else response.data = await User.find({}).skip(parseInt(skip)).limit(parseInt(limit)).sort([[ sortBy, orderBy ]]);
 
     return response;
 }

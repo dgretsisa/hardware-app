@@ -1,23 +1,24 @@
-const Product = require('../model/product.model');
+const Product = require('../model/product.model').Product;
 const utility = require('../utility/utility.function');
 
 const fetch = async (params) => {
     const { limit, skip, sortBy, orderBy, searchKeyword } = params;
-    const sort = {};
     
-    if(sortBy && orderBy) {
-        sort[sortBy] = orderBy;
+    if(!sortBy && !orderBy) {
+        sortBy = 'createdAt';
+        orderBy = -1;
     }
-
+    
     const response = {};
     response.totalRecords = await Product.countDocuments({});
 
     if(searchKeyword) {
-        const data =  await Product.find({ $text : { $search: searchKeyword }}).skip(parseInt(skip)).limit(parseInt(limit)).sort(sort);
+        const searchRegex = new RegExp(utility.escapeRegex(searchKeyword), 'gi');
+        const data =  await Product.find({ $or: [{productCode: searchRegex}, {description: searchRegex}, {category: searchRegex}, {unit: searchRegex}]}).skip(parseInt(skip)).limit(parseInt(limit)).sort([[ sortBy, orderBy ]]);
         response.data = data;
         response.totalRecords = data.length; 
     }
-    else response.data = await Product.find({}).skip(parseInt(skip)).limit(parseInt(limit)).sort(sort);
+    else response.data = await Product.find({}).skip(parseInt(skip)).limit(parseInt(limit)).sort([[ sortBy, orderBy ]]);
 
     return response;
 }

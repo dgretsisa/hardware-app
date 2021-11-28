@@ -1,14 +1,22 @@
 const StockinRepository = require('../repository/stockin.repository');
+const Product = require('../model/product.model').Product;
 const utility = require('../utility/utility.function');
 
 const fetch = async (req, res) => {
-    const data = await StockinRepository.fetch();
+    const data = await StockinRepository.fetch(req.query);
     return res.status(200).json(data);
 }
 
 const create = async (req, res) => {
     const data = await StockinRepository.create(req.body);
     utility.broadcast(req, 'ADD_STOCKIN', data);
+    
+    data.map(async(stockin) => {
+        const quantity = parseFloat(stockin.product.quantity) + parseFloat(stockin.quantity);
+        const product = await Product.findByIdAndUpdate(stockin.product._id, { quantity }, { new: true });
+        utility.broadcast(req, 'UPDATE_PRODUCT', product);
+    });
+
     return res.status(200).json(data);
 }
 

@@ -20,6 +20,7 @@ app.use('/api/users', require('./server/route/user.route'));
 app.use('/api/products', require('./server/route/product.route'));
 app.use('/api/stockins/cart', require('./server/route/stockin.cart.route'));
 app.use('/api/stockins', require('./server/route/stockin.route'));
+app.use('/api/pos', require('./server/route/pos.route'));
 app.use('/auth', require('./server/route/auth.route'));
 
 

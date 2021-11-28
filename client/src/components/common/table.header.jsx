@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TableHeader = ({ tableheader, hasShow, hasSort, hasButton, hasSearch }) => {
+const TableHeader = ({ tableheader, hasShow, hasSort, hasButton, customButton, hasSearch }) => {
     return (
         <div className="flex items-center bg-gray-200 p-3 gap-5 px-5">
             <div className="flex flex-1 items-center">
@@ -47,8 +47,8 @@ const TableHeader = ({ tableheader, hasShow, hasSort, hasButton, hasSearch }) =>
                             </select>
                         </div>
                     }
-                    {hasButton && 
-                        <button onClick={tableheader.setToggleAddForm} className="px-3 py-1 border border-gray-300 cursor-pointer rounded bg-white hover:text-white hover:bg-gray-500">
+                    {hasButton &&
+                        <button onClick={() => { customButton ? tableheader.customButtonMethod() : tableheader.setToggleAddForm() }} className="px-3 py-1 border border-gray-300 cursor-pointer rounded bg-white hover:text-white hover:bg-gray-500">
                             {tableheader.button}
                         </button>
                     }

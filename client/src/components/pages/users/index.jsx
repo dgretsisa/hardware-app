@@ -40,9 +40,8 @@ const UserIndex = () => {
         sortByOptions: [
             { label: 'Date', field: 'createdAt' },
             { label: 'Name', field: 'name' },
-            { label: 'Username #', field: 'username' },
+            { label: 'Username', field: 'username' },
             { label: 'Role', field: 'role' },
-            { label: 'Status', field: 'isActive' },
         ],
         setPageLimit: (e) => setPageLimit(e.target.value),
         setSortBy: (e) => setSortBy(e.target.value),
@@ -87,14 +86,14 @@ const UserIndex = () => {
     /** Initialize Users */
     useEffect(() => {
         dispatch(fetchUsers({ currentPage, pageLimit, sortBy, orderBy }))
-        .then(total => setTotalRecords(total)).catch(error => {});
+        .then(total => setTotalRecords(total)).catch(error => handleHideAlert());
     }, [currentPage, pageLimit, sortBy, orderBy, dispatch])
 
     const handleSearch = (e) => {
         e.preventDefault();
 
         dispatch(fetchUsers({ currentPage, pageLimit, sortBy, orderBy, searchKeyword: e.target.value }))
-        .then(total => setTotalRecords(total)).catch(error => {});
+        .then(total => setTotalRecords(total)).catch(error => handleHideAlert());
     }
 
     const handleSubmit = (e) => {
