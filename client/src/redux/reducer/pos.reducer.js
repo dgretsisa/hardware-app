@@ -2,7 +2,8 @@ import { Types } from '../types/pos.types';
 
 const initialState = {
     purchases: [],
-    resultProducts: []
+    resultProducts: [],
+    posSummary: {}
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -43,6 +44,11 @@ const reducer = (state = initialState, { type, payload }) => {
         case Types.DELETE_BULK_PURCHASE_SUCCESS:
             return {
                 purchases: []
+            }
+        case Types.SET_POS_SUMMARY:
+            return {
+                ...state,
+                posSummary: payload.summary
             }
         default:
             return state;

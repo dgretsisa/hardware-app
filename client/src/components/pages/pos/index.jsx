@@ -9,6 +9,7 @@ import PosSearch from './pos.search';
 import PosAdd from './pos.add';
 import PosUpdate from './pos.update';
 import PosDelete from './pos.delete';
+import POSSummary from './pos.summary';
 
 import { fetchPurchases, searchProducts, addPurchase, updatePurchase, deletePurchase } from '../../../redux/action/pos.action';
 import { clearLogs, hideAlert } from '../../../redux/action/notification.action';
@@ -16,16 +17,13 @@ import { clearLogs, hideAlert } from '../../../redux/action/notification.action'
 const PosIndex = () => {
     const dispatch = useDispatch();
 
-    const { purchases, resultProducts } = useSelector(state => state.posReducer);
+    const { purchases, resultProducts, posSummary } = useSelector(state => state.posReducer);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageLimit, setPageLimit] = useState(1000000);
     const [formInputs, setFormInputs] = useState({});
     const [toggleAddForm, setToggleAddForm] = useState(false);
     const [toggleUpdateForm, setToggleUpdateForm] = useState(false);
     const [toggleDelete, setToggleDelete] = useState(false);
     const [toggleAddAllEntries, setToggleAddAllEntries] = useState(false);
-    const [totalRecords, setTotalRecords] = useState(0);
     const [selectedRow, setSelectedRow] = useState({});
     const [isSearching, setIsSearching] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState({});
@@ -66,10 +64,10 @@ const PosIndex = () => {
         </div>);
     }
 
-    /** Initialize Product */
+    /** Initialize Purchases */
     useEffect(() => {
         dispatch(fetchPurchases())
-            .then(() => { }).catch(error => handleHideAlert());
+            .then(() => {}).catch(error => handleHideAlert());
     }, [dispatch])
 
     const handleSearch = (e) => {
@@ -113,13 +111,13 @@ const PosIndex = () => {
             dispatch(updatePurchase(selectedRow._id, formInputs)).then(() => {
                 setFormInputs({});
                 setToggleUpdateForm(false);
-            }).catch(() => {});
+            }).catch(() => { });
         }
 
         if (toggleDelete) {
             dispatch(deletePurchase(selectedRow._id)).then(() => {
                 setToggleDelete(false);
-            }).catch(() => {});
+            }).catch(() => { });
         }
 
         /**if(toggleAddAllEntries) {
@@ -166,7 +164,7 @@ const PosIndex = () => {
             price: row.price,
             quantity: row.quantity,
             unit: row.unit,
-            discount: row.discount ? row.discount: 0,
+            discount: row.discount ? row.discount : 0,
             total: row.total
         });
     }
@@ -203,7 +201,8 @@ const PosIndex = () => {
         setFormInputs(formInputs => ({ ...formInputs, [e.target.name]: e.target.value }));
 
         if (e.target.name === 'quantity') setFormInputs(formInputs => ({ ...formInputs, total: ((parseFloat(formInputs.price) * parseFloat(e.target.value)) - parseFloat(formInputs.discount !== '' ? formInputs.discount : 0)) }))
-        if (e.target.name === 'discount') setFormInputs(formInputs => ({ ...formInputs, total: ((parseFloat(formInputs.price) * parseFloat(formInputs.quantity)) - parseFloat(e.target.value !== '' ? e.target.value : 0)),
+        if (e.target.name === 'discount') setFormInputs(formInputs => ({
+            ...formInputs, total: ((parseFloat(formInputs.price) * parseFloat(formInputs.quantity)) - parseFloat(e.target.value !== '' ? e.target.value : 0)),
             discount: e.target.value !== '' ? e.target.value : 0
         }))
     }
@@ -250,7 +249,7 @@ const PosIndex = () => {
             }
 
             {toggleDelete &&
-                <PosDelete 
+                <PosDelete
                     selectedRow={selectedRow}
                     handleSubmit={handleSubmit}
                     handleCancel={handleCancel}
@@ -261,6 +260,12 @@ const PosIndex = () => {
                 columns={columns}
                 rows={purchases}
             />
+
+            {purchases.length > 0 &&
+                <POSSummary
+                    posSummary={posSummary}
+                />
+            }
         </div>
     )
 }

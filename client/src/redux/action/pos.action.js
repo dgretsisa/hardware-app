@@ -39,6 +39,13 @@ const deletePurchaseSuccess = (purchase) => {
     }
 }
 
+const setPosSummary = (summary) => {
+    return {
+        type: Types.SET_POS_SUMMARY,
+        payload: { summary }
+    }
+}
+
 /** Dispatcher */
 
 export const fetchPurchases = () => (dispatch) => {
@@ -46,7 +53,8 @@ export const fetchPurchases = () => (dispatch) => {
     return new Promise((resolve, reject) => {
         PosAPI.fetch()
         .then(({data}) => {
-            dispatch(initializePurchases(data));
+            dispatch(initializePurchases(data.data));
+            dispatch(setPosSummary(data.summary[0]));
             resolve();
         })
         .catch(error => {
@@ -131,5 +139,9 @@ export const updatePurchaseSocket = (purchase) => (dispatch) => {
 
 export const deletePurchaseSocket = (purchase) => (dispatch) => {
     dispatch(deletePurchaseSuccess(purchase));
+}
+
+export const setPosSummarySocket = (summary) => (dispatch) => {
+    dispatch(setPosSummary(summary));
 }
 

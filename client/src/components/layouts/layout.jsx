@@ -21,7 +21,7 @@ import { addUserSocket, updateUserSocket, deleteUserSocket } from '../../redux/a
 import { addProductSocket, updateProductSocket, deleteProductSocket } from '../../redux/action/product.action';
 import { addStockincartSocket, updateStockincartSocket, deleteStockincartSocket, deleteBulkStockincartSocket } from '../../redux/action/stockincart.action';
 import { addStockinSocket } from '../../redux/action/stockin.action';
-import  { addPurchaseSocket, updatePurchaseSocket, deletePurchaseSocket } from '../../redux/action/pos.action';
+import  { addPurchaseSocket, updatePurchaseSocket, deletePurchaseSocket, setPosSummarySocket } from '../../redux/action/pos.action';
 
 /** Socket Context */
 import { SocketContext } from '../../context/websocket.context';
@@ -50,9 +50,18 @@ const Layout = () => {
             dispatch(deleteBulkStockincartSocket())
         });
 
-        socket.on('ADD_POS', purchase => dispatch(addPurchaseSocket(purchase)));
-        socket.on('UPDATE_POS', purchase => dispatch(updatePurchaseSocket(purchase)));
-        socket.on('DELETE_POS', purchase => dispatch(deletePurchaseSocket(purchase)));
+        socket.on('ADD_POS', data => {
+            dispatch(addPurchaseSocket(data.data));
+            dispatch(setPosSummarySocket(data.summary[0]));
+        });
+        socket.on('UPDATE_POS', data => {
+            dispatch(updatePurchaseSocket(data.data));
+            dispatch(setPosSummarySocket(data.summary[0]));
+        });
+        socket.on('DELETE_POS', data => {
+            dispatch(deletePurchaseSocket(data.data));
+            dispatch(setPosSummarySocket(data.summary[0]));
+        });
     }, [socket, dispatch])
 
     return (

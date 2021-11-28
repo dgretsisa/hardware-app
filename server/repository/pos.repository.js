@@ -1,11 +1,41 @@
 const Pos = require('../model/pos.model');
 
 const fetch = async () => {
-    return await Pos.find({});
+    const response = {};
+
+    response.data = await Pos.find({});
+
+    if(response.data.length > 0) {
+        response.summary = await Pos.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    amountDue: { $sum: "$total" },
+                    totalDiscount:  { $sum: "$discount" }
+                }
+            }
+        ]);
+    }
+    else response.summary = [{}];
+
+    return response;
 }
 
 const create = async (resource) => {
-    return await Pos.create(resource);
+    const response = {};
+
+    response.data = await Pos.create(resource);
+    response.summary = await Pos.aggregate([
+        {
+            $group: {
+                _id: null,
+                amountDue: { $sum: "$total" },
+                totalDiscount:  { $sum: "$discount" }
+            }
+        }
+    ]);
+
+    return response;
 }
 
 const fetchById = async (id) => {
@@ -13,11 +43,37 @@ const fetchById = async (id) => {
 }
 
 const updateById = async (id, resource) => {
-    return await Pos.findByIdAndUpdate(id, resource, { new: true });
+    const response = {};
+
+    response.data = await Pos.findByIdAndUpdate(id, resource, { new: true });
+    response.summary = await Pos.aggregate([
+        {
+            $group: {
+                _id: null,
+                amountDue: { $sum: "$total" },
+                totalDiscount:  { $sum: "$discount" }
+            }
+        }
+    ]);
+
+    return response;
 }
 
 const deleteById = async (id) => {
-    return await Pos.findByIdAndRemove(id, { new: true });
+    const response = {};
+
+    response.data = await Pos.findByIdAndRemove(id, { new: true });
+    response.summary = await Pos.aggregate([
+        {
+            $group: {
+                _id: null,
+                amountDue: { $sum: "$total" },
+                totalDiscount:  { $sum: "$discount" }
+            }
+        }
+    ]);
+
+    return response;
 }
 
 module.exports = {
